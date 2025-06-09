@@ -93,7 +93,7 @@
                         <li class="sidebar__item">
                             <a href="settings.html" data-i18n="settings">⚙️ 設定</a>
                         </li>
-                        <li class="sidebar__item">
+                        <li class="sidebar__item sidebar__item--active">
                             <a href="changelog.html" data-i18n="changelog">🕑 更新履歴</a>
                         </li>
                     </ul>
@@ -104,7 +104,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Content Views -->
-            <div class="content-view" id="editorView">
+            <div class="content-view hidden" id="editorView">
                 <div class="page-header">
                     <h2 id="pageTitle">ページタイトル</h2>
                     <div class="page-actions">
@@ -203,6 +203,16 @@
                 </div>
             </div>
 
+            <div class="content-view" id="changelogView">
+                <div class="view-header">
+                    <h2 data-i18n="changelog">更新履歴</h2>
+                </div>
+                <div class="changelog-content">
+                    <h3>v1.0.0-beta</h3>
+                    <p data-i18n="changelog_v1">初期リリース、多言語対応を追加</p>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -265,5 +275,12 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.app) {
+                app.switchView('changelog');
+            }
+        });
+    </script>
 </body>
 </html>

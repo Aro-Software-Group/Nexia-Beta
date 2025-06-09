@@ -345,10 +345,14 @@ class NexiaApp {
 
     setupEventListeners() {
         // Header events
-        document.getElementById('sidebarToggle').addEventListener('click', this.toggleSidebar.bind(this));
-        document.getElementById('themeToggle').addEventListener('click', this.toggleTheme.bind(this));
-        document.getElementById('addButton').addEventListener('click', this.showAddMenu.bind(this));
-        document.getElementById('searchInput').addEventListener('input', this.handleSearch.bind(this));
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) sidebarToggle.addEventListener('click', this.toggleSidebar.bind(this));
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) themeToggle.addEventListener('click', this.toggleTheme.bind(this));
+        const addButton = document.getElementById('addButton');
+        if (addButton) addButton.addEventListener('click', this.showAddMenu.bind(this));
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.addEventListener('input', this.handleSearch.bind(this));
 
         // Sidebar events
         document.addEventListener('click', (e) => {
@@ -361,14 +365,20 @@ class NexiaApp {
             }
         });
 
-        document.getElementById('addPageBtn').addEventListener('click', this.addNewPage.bind(this));
+        const addPageBtn = document.getElementById('addPageBtn');
+        if (addPageBtn) addPageBtn.addEventListener('click', this.addNewPage.bind(this));
 
         // Timer events
-        document.getElementById('startTimer').addEventListener('click', this.startTimer.bind(this));
-        document.getElementById('pauseTimer').addEventListener('click', this.pauseTimer.bind(this));
-        document.getElementById('resetTimer').addEventListener('click', this.resetTimer.bind(this));
-        document.getElementById('timerType').addEventListener('change', this.changeTimerType.bind(this));
-        document.getElementById('customTimerInput').addEventListener('change', (e) => {
+        const startTimer = document.getElementById('startTimer');
+        if (startTimer) startTimer.addEventListener('click', this.startTimer.bind(this));
+        const pauseTimer = document.getElementById('pauseTimer');
+        if (pauseTimer) pauseTimer.addEventListener('click', this.pauseTimer.bind(this));
+        const resetTimer = document.getElementById('resetTimer');
+        if (resetTimer) resetTimer.addEventListener('click', this.resetTimer.bind(this));
+        const timerType = document.getElementById('timerType');
+        if (timerType) timerType.addEventListener('change', this.changeTimerType.bind(this));
+        const customTimerInput = document.getElementById('customTimerInput');
+        if (customTimerInput) customTimerInput.addEventListener('change', (e) => {
             const val = parseInt(e.target.value, 10);
             if (!isNaN(val) && val > 0) {
                 this.timer.customDuration = val;
@@ -379,11 +389,13 @@ class NexiaApp {
         });
 
         // Calendar navigation
-        document.getElementById('prevMonth').addEventListener('click', () => {
+        const prevMonth = document.getElementById('prevMonth');
+        if (prevMonth) prevMonth.addEventListener('click', () => {
             this.calendarDate.setMonth(this.calendarDate.getMonth() - 1);
             this.renderCalendarView();
         });
-        document.getElementById('nextMonth').addEventListener('click', () => {
+        const nextMonth = document.getElementById('nextMonth');
+        if (nextMonth) nextMonth.addEventListener('click', () => {
             this.calendarDate.setMonth(this.calendarDate.getMonth() + 1);
             this.renderCalendarView();
         });
@@ -396,25 +408,36 @@ class NexiaApp {
         });
 
         // Task management events
-        document.getElementById('addTaskBtn').addEventListener('click', this.showTaskModal.bind(this));
-        document.getElementById('saveTask').addEventListener('click', this.saveTask.bind(this));
-        document.getElementById('cancelTask').addEventListener('click', this.hideTaskModal.bind(this));
-        document.getElementById('closeTaskModal').addEventListener('click', this.hideTaskModal.bind(this));
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        if (addTaskBtn) addTaskBtn.addEventListener('click', this.showTaskModal.bind(this));
+        const saveTask = document.getElementById('saveTask');
+        if (saveTask) saveTask.addEventListener('click', this.saveTask.bind(this));
+        const cancelTask = document.getElementById('cancelTask');
+        if (cancelTask) cancelTask.addEventListener('click', this.hideTaskModal.bind(this));
+        const closeTaskModal = document.getElementById('closeTaskModal');
+        if (closeTaskModal) closeTaskModal.addEventListener('click', this.hideTaskModal.bind(this));
 
         // Filter events
-        document.getElementById('filterPriority').addEventListener('change', this.filterTasks.bind(this));
+        const filterPriority = document.getElementById('filterPriority');
+        if (filterPriority) filterPriority.addEventListener('change', this.filterTasks.bind(this));
 
         // Export button
-        document.getElementById('exportBtn').addEventListener('click', this.exportData.bind(this));
-        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importInput').click());
-        document.getElementById('importInput').addEventListener('change', (e) => {
-            if (e.target.files[0]) {
-                this.importData(e.target.files[0]);
-                e.target.value = '';
-            }
-        });
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) exportBtn.addEventListener('click', this.exportData.bind(this));
+        const importBtn = document.getElementById('importBtn');
+        const importInput = document.getElementById('importInput');
+        if (importBtn && importInput) {
+            importBtn.addEventListener('click', () => importInput.click());
+            importInput.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    this.importData(e.target.files[0]);
+                    e.target.value = '';
+                }
+            });
+        }
 
-        document.getElementById('saveSettingsBtn').addEventListener('click', this.saveSettings.bind(this));
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', this.saveSettings.bind(this));
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
@@ -431,7 +454,8 @@ class NexiaApp {
         });
 
         // Command palette events
-        document.getElementById('commandInput').addEventListener('input', this.filterCommands.bind(this));
+        const commandInput = document.getElementById('commandInput');
+        if (commandInput) commandInput.addEventListener('input', this.filterCommands.bind(this));
         document.addEventListener('click', (e) => {
             if (e.target.matches('.command-item')) {
                 this.executeCommand(e.target.dataset.command);
@@ -439,13 +463,15 @@ class NexiaApp {
         });
 
         // Modal backdrop click
-        document.getElementById('taskModal').addEventListener('click', (e) => {
+        const taskModal = document.getElementById('taskModal');
+        if (taskModal) taskModal.addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 this.hideTaskModal();
             }
         });
 
-        document.getElementById('commandPalette').addEventListener('click', (e) => {
+        const commandPalette = document.getElementById('commandPalette');
+        if (commandPalette) commandPalette.addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 this.hideCommandPalette();
             }
@@ -522,7 +548,8 @@ class NexiaApp {
         document.querySelectorAll('.view-toggle').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+        const activeToggle = document.querySelector(`[data-view="${viewName}"]`);
+        if (activeToggle) activeToggle.classList.add('active');
 
         this.renderCurrentView();
     }
