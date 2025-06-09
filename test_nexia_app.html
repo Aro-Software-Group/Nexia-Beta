@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NexiaApp Test</title>
+    <!-- Minimal DOM structure -->
+    <div id="sidebar"></div>
+    <div id="themeToggle"></div>
+    <div id="addButton"></div>
+    <input id="searchInput" />
+    <div id="pagesList"></div>
+    <div id="addPageBtn"></div>
+    <div id="startTimer"></div>
+    <div id="pauseTimer"></div>
+    <div id="resetTimer"></div>
+    <select id="timerType"><option value="pomodoro">Pomodoro</option></select>
+    <input id="customTimerInput" />
+    <div id="prevMonth"></div>
+    <div id="nextMonth"></div>
+    <div id="editorContainer"></div>
+    <div id="addTaskBtn"></div>
+    <div id="saveTask"></div>
+    <div id="cancelTask"></div>
+    <div id="closeTaskModal"></div>
+    <select id="filterPriority"><option value="">All</option></select>
+    <div id="exportBtn"></div>
+    <div id="importBtn"></div>
+    <input type="file" id="importInput" />
+    <div id="saveSettingsBtn"></div>
+    <input id="commandInput" />
+    <div id="taskModal"></div>
+    <div id="commandPalette"></div>
+    <div id="pageTitle"></div>
+    <div id="tasksTableBody"></div>
+    <div id="todoTasks" data-status="todo"></div>
+    <div id="inProgressTasks" data-status="in-progress"></div>
+    <div id="completedTasks" data-status="completed"></div>
+    <div id="tasksList"></div>
+    <div id="calendarMonth"></div>
+    <div id="calendarGrid"></div>
+    <input id="usernameInput" />
+    <select id="languageSelect"><option value="ja">JA</option></select>
+    <select id="themeSelect"><option value="light">Light</option></select>
+    <div id="timerDisplay"></div>
+    <div class="content-view" id="editorView"></div>
+    <div class="content-view hidden" id="tableView"></div>
+    <div class="content-view hidden" id="kanbanView"></div>
+    <div class="content-view hidden" id="listView"></div>
+    <div class="content-view hidden" id="calendarView"></div>
+    <div class="content-view hidden" id="settingsView"></div>
+    <div class="content-view hidden" id="changelogView"></div>
+    <div id="commandResults">
+        <div class="command-item" data-command="new-task">New Task</div>
+        <div class="command-item" data-command="new-page">New Page</div>
+    </div>
+    <button id="sidebarToggle"></button>
+</head>
+<body>
+    <h1>NexiaApp Test Console</h1>
+    <script src="app.js"></script>
+    <script>
+        async function runTests() {
+            console.log('[TEST_SCRIPT] Starting tests...');
+
+            // 1. Clear localStorage
+            localStorage.removeItem('nexia_data');
+            console.log('[TEST_SCRIPT] localStorage cleared.');
+
+            // 2. Instantiate NexiaApp (First time)
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            console.log('[TEST_SCRIPT] Creating first NexiaApp instance...');
+            let app;
+            try {
+                app = new NexiaApp(); // Constructor calls this.init() which is async
+                console.log('[TEST_SCRIPT] NexiaApp constructor called.');
+
+                // Constructor's this.init() is async and not awaited by constructor.
+                // We need to manually ensure essential async setup is done.
+                // Let's wait a bit for the constructor's this.init() to likely call initDatabase and loadData,
+                // or call them manually if we modify NexiaApp to not auto-init.
+                // For now, let's assume initDatabase and loadData from constructor's init() complete or we override.
+
+                // Manually ensure data initialization for testing core data logic
+                // This bypasses the full DOM-dependent init/start sequence.
+                console.log('[TEST_SCRIPT] Manually ensuring data initialization...');
+                await app.initDatabase(); // Ensure DB is initialized or checked
+                await app.loadData();     // Ensure data is loaded
+                console.log('[TEST_SCRIPT] Manual data initialization complete.');
+
+                // Set a default page for operations if not set by loadData correctly
+                if (!app.currentPage && app.data.pages.length > 0) {
+                    app.currentPage = app.data.pages[0].id;
+                } else if (!app.currentPage && app.data.pages.length === 0) {
+                    // If there are no pages, initDatabase should have created 'welcome'
+                    // This indicates an issue if welcome page is not there.
+                    console.warn('[TEST_SCRIPT] No current page and no pages loaded; this might indicate an issue with initDatabase/loadData.');
+                }
+
+
+            } catch (e) {
+                console.error('[TEST_SCRIPT] Error during app instantiation or manual data init:', e.message, e.stack);
+                console.error('[TEST_SCRIPT] FAIL: App setup failed, cannot proceed.');
+                console.log('[TEST_SCRIPT] Tests finished (due to error).');
+                return;
+            }
+
+            // 3. Verify Initial State (after our manual setup)
+            console.log('[TEST_SCRIPT] Verifying initial state...');
+            if (app.data && Array.isArray(app.data.pages) && app.data.pages.length > 0 && app.data.pages[0].id === 'welcome') {
+                console.log('[TEST_SCRIPT] PASS: Initial state is correct. Welcome page loaded.');
+            } else {
+                console.error('[TEST_SCRIPT] FAIL: Initial state incorrect. app.data.pages:', JSON.stringify(app.data.pages));
+            }
+
+            // 4. Test Page Creation
+            console.log('[TEST_SCRIPT] Testing page creation...');
+            const originalPrompt = window.prompt;
+            window.prompt = () => 'My New Test Page';
+            try {
+                // Ensure app.currentPage is set for addNewPage if it relies on it implicitly
+                if (!app.currentPage && app.data.pages.length > 0) {
+                     app.currentPage = app.data.pages[0].id; // Default to first page if not set
+                }
+                app.addNewPage();
+                console.log('[TEST_SCRIPT] app.addNewPage() called.');
+            } catch (e) {
+                console.error('[TEST_SCRIPT] Error calling app.addNewPage():', e.message, e.stack);
+                window.prompt = originalPrompt;
+                console.log('[TEST_SCRIPT] Tests finished (due to error in addNewPage).');
+                return;
+            }
+            window.prompt = originalPrompt;
+
+            const newPage = app.data.pages.find(p => p.title === 'My New Test Page');
+            if (newPage) {
+                console.log('[TEST_SCRIPT] PASS: New page created in app.data.');
+                await app.saveData();
+                const storedData = JSON.parse(localStorage.getItem('nexia_data'));
+                if (storedData && storedData.pages && storedData.pages.find(p => p.id === newPage.id)) {
+                    console.log('[TEST_SCRIPT] PASS: New page saved to localStorage.');
+                } else {
+                    console.error('[TEST_SCRIPT] FAIL: New page NOT saved to localStorage. Stored data:', JSON.stringify(storedData));
+                }
+            } else {
+                console.error('[TEST_SCRIPT] FAIL: New page not found in app.data.pages. Current pages:', JSON.stringify(app.data.pages));
+            }
+
+            // 5. Test Block Addition
+            console.log('[TEST_SCRIPT] Testing block addition...');
+            if (!newPage) {
+                console.error('[TEST_SCRIPT] SKIP: Cannot test block addition, new page creation failed.');
+            } else {
+                try {
+                    app.switchPage(newPage.id); // This sets app.currentPage. DOM rendering part of it will be skipped/fail gracefully.
+                    console.log('[TEST_SCRIPT] app.switchPage() called for new page.');
+                    app.addBlock('text');
+                    console.log('[TEST_SCRIPT] app.addBlock() called.');
+                } catch (e) {
+                    console.error('[TEST_SCRIPT] Error during switchPage or addBlock:', e.message, e.stack);
+                    console.log('[TEST_SCRIPT] Tests finished (due to error in block addition setup).');
+                    return;
+                }
+
+                const pageAfterBlockAdd = app.data.pages.find(p => p.id === newPage.id);
+                if (pageAfterBlockAdd && pageAfterBlockAdd.blocks.length > 1 && pageAfterBlockAdd.blocks[1].type === 'text') {
+                    console.log('[TEST_SCRIPT] PASS: Text block added to current page in app.data.');
+                    await app.saveData();
+                    const storedData = JSON.parse(localStorage.getItem('nexia_data'));
+                    const storedPage = storedData.pages.find(p => p.id === newPage.id);
+                    if (storedPage && storedPage.blocks.length > 1 && storedPage.blocks[1].type === 'text') {
+                        console.log('[TEST_SCRIPT] PASS: Text block saved to localStorage.');
+                    } else {
+                        console.error('[TEST_SCRIPT] FAIL: Text block NOT saved to localStorage. Stored page:', JSON.stringify(storedPage));
+                    }
+                } else {
+                    console.error('[TEST_SCRIPT] FAIL: Text block not added correctly to app.data. Page state:', JSON.stringify(pageAfterBlockAdd));
+                }
+            }
+
+            // 6. Test Content Editing and Saving
+            console.log('[TEST_SCRIPT] Testing content editing...');
+            const pageForEditing = app.data.pages.find(p => p.id === (newPage ? newPage.id : null));
+            if (!pageForEditing || !pageForEditing.blocks[1]) {
+                 console.error('[TEST_SCRIPT] SKIP: Cannot test content editing, block creation or new page failed.');
+            } else {
+                const targetBlockForEdit = pageForEditing.blocks[1];
+                targetBlockForEdit.content = 'Hello, world!';
+                await app.saveData();
+
+                const editedPageInData = app.data.pages.find(p => p.id === newPage.id);
+                if (editedPageInData && editedPageInData.blocks[1].content === 'Hello, world!') {
+                    console.log('[TEST_SCRIPT] PASS: Block content updated in app.data.');
+                } else {
+                    console.error('[TEST_SCRIPT] FAIL: Block content NOT updated in app.data. Block state:', JSON.stringify(editedPageInData ? editedPageInData.blocks[1] : 'page not found'));
+                }
+
+                const storedDataAfterEdit = JSON.parse(localStorage.getItem('nexia_data'));
+                const storedPageAfterEdit = storedDataAfterEdit.pages.find(p => p.id === newPage.id);
+                if (storedPageAfterEdit && storedPageAfterEdit.blocks[1].content === 'Hello, world!') {
+                    console.log('[TEST_SCRIPT] PASS: Block content saved to localStorage.');
+                } else {
+                    console.error('[TEST_SCRIPT] FAIL: Block content NOT saved to localStorage. Stored page:', JSON.stringify(storedPageAfterEdit));
+                }
+            }
+
+            // 7. Test Persistence (Simulate Reload)
+            console.log('[TEST_SCRIPT] Simulating reload by creating a new NexiaApp instance...');
+            let app2;
+            try {
+                app2 = new NexiaApp();
+                console.log('[TEST_SCRIPT] Second NexiaApp instance constructor called.');
+                // Manually ensure data initialization for app2
+                console.log('[TEST_SCRIPT] Manually ensuring data initialization for app2...');
+                await app2.initDatabase();
+                await app2.loadData();
+                console.log('[TEST_SCRIPT] Manual data initialization for app2 complete.');
+
+            } catch (e) {
+                console.error('[TEST_SCRIPT] Error during app2 instantiation or manual data init:', e.message, e.stack);
+                console.error('[TEST_SCRIPT] FAIL: app2 setup failed, persistence test cannot be fully verified.');
+                console.log('[TEST_SCRIPT] Tests finished (due to error in app2 setup).');
+                return;
+            }
+
+            const reloadedPage = app2.data.pages.find(p => p.title === 'My New Test Page');
+            if (reloadedPage) {
+                console.log('[TEST_SCRIPT] PASS: Custom page ("My New Test Page") persisted and loaded in app2.');
+                if (reloadedPage.blocks.length > 1 && reloadedPage.blocks[1].type === 'text' && reloadedPage.blocks[1].content === 'Hello, world!') {
+                    console.log('[TEST_SCRIPT] PASS: Block and its content ("Hello, world!") persisted and loaded in app2.');
+                } else {
+                    console.error('[TEST_SCRIPT] FAIL: Block or its content did NOT persist/load correctly in app2. Blocks:', JSON.stringify(reloadedPage.blocks));
+                }
+            } else {
+                console.error('[TEST_SCRIPT] FAIL: Custom page ("My New Test Page") did NOT persist/load in app2. app2.data.pages:', JSON.stringify(app2.data.pages));
+            }
+
+            console.log('[TEST_SCRIPT] Tests finished.');
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runTests);
+        } else {
+            runTests();
+        }
+    </script>
+</body>
+</html>
