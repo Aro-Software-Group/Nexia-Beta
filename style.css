@@ -685,6 +685,11 @@ select.form-control {
   --color-priority-low: #4caf50;
   --color-sidebar: #f0efec;
   --color-header: #ffffff;
+  --color-header-rgb: 255, 255, 255;
+  --color-surface-rgb: 245, 244, 241;
+  --color-border-rgb: 44, 44, 44;
+  --color-primary-rgb: 255, 107, 53;
+  --color-text-rgb: 44, 44, 44;
 
   /* Common style patterns */
   --focus-ring: 0 0 0 3px var(--color-focus-ring);
@@ -787,6 +792,11 @@ select.form-control {
   --color-card-border-inner: rgba(255, 255, 255, 0.05);
   --color-sidebar: #252525;
   --color-header: #2d2d2d;
+  --color-header-rgb: 45, 45, 45;
+  --color-surface-rgb: 45, 45, 45;
+  --color-border-rgb: 255, 255, 255;
+  --color-primary-rgb: 255, 120, 73;
+  --color-text-rgb: 255, 255, 255;
 }
 
 /* Base styles */
@@ -1857,4 +1867,213 @@ p {
     border-radius: var(--radius-base);
     padding: var(--space-12);
     border: 1px solid var(--color-border);
+}
+
+/* Clear Design Mode */
+[data-clear-design="true"] {
+  /* Whitespace Focus */
+  --space-multiplier: 1.2; /* Example: Increase spacing by 20% */
+}
+
+[data-clear-design="true"] .content-view {
+  padding: var(--space-40);
+}
+
+[data-clear-design="true"] .header {
+  padding: var(--space-16) var(--space-24);
+}
+
+[data-clear-design="true"] .app-layout {
+  gap: calc(var(--space-24) * var(--space-multiplier, 1)); /* Example adjustment */
+}
+/* Alternatively, adjust margins on sidebar/main-content if direct gap modification is not straightforward */
+[data-clear-design="true"] .sidebar {
+  margin-right: calc(var(--space-12) * var(--space-multiplier, 1));
+}
+
+[data-clear-design="true"] .page-header {
+  margin-bottom: var(--space-40);
+}
+
+/* Transparency/Glassmorphism */
+[data-clear-design="true"] .sidebar,
+[data-clear-design="true"] .header {
+  background-color: rgba(var(--color-header-rgb, 255, 255, 255), 0.8);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%); /* Safari */
+}
+
+[data-clear-design="true"] .header {
+  border-bottom: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.1);
+}
+
+[data-clear-design="true"] .sidebar {
+  border-right: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.1);
+}
+
+[data-clear-design="true"] .modal__content,
+[data-clear-design="true"] .command-palette__content {
+  background-color: rgba(var(--color-surface-rgb, 240, 239, 236), 0.85);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%); /* Safari */
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.15);
+}
+
+[data-clear-design="true"] .kanban-column,
+[data-clear-design="true"] .dashboard-card,
+[data-clear-design="true"] .timer-widget,
+[data-clear-design="true"] .add-block-menu,
+[data-clear-design="true"] .table-container,
+[data-clear-design="true"] .task-item,
+[data-clear-design="true"] .calendar-container {
+  background-color: rgba(var(--color-surface-rgb, 240, 239, 236), 0.75);
+  backdrop-filter: blur(8px) saturate(160%);
+  -webkit-backdrop-filter: blur(8px) saturate(160%); /* Safari */
+  border: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.1);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Spatial/3D Design (Shadows) & Animations */
+[data-clear-design="true"] .btn {
+  transition: background-color var(--duration-normal) var(--ease-standard),
+              color var(--duration-normal) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard),
+              box-shadow var(--duration-fast) var(--ease-standard);
+}
+[data-clear-design="true"] .btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+/* Smooth Animations */
+[data-clear-design="true"] .modal {
+  transition: opacity var(--duration-slow) var(--ease-standard),
+              visibility var(--duration-slow) var(--ease-standard); /* Removed transform from modal itself */
+}
+
+[data-clear-design="true"] .modal .modal__content {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+    transition: opacity var(--duration-slow) var(--ease-standard),
+                transform var(--duration-slow) var(--ease-standard);
+}
+
+[data-clear-design="true"] .modal.active .modal__content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+[data-clear-design="true"] .sidebar {
+  transition: transform var(--duration-slow) var(--ease-standard),
+              box-shadow var(--duration-slow) var(--ease-standard),
+              background-color var(--duration-slow) var(--ease-standard), /* Added for glassmorphism */
+              border-color var(--duration-slow) var(--ease-standard); /* Added for glassmorphism */
+}
+
+[data-clear-design="true"] .kanban-task, /* Combined for DRY */
+[data-clear-design="true"] .task-item {
+  transition: transform var(--duration-normal) var(--ease-standard),
+              box-shadow var(--duration-normal) var(--ease-standard),
+              background-color var(--duration-normal) var(--ease-standard);
+}
+
+[data-clear-design="true"] .kanban-task:hover,
+[data-clear-design="true"] .task-item:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: var(--shadow-lg);
+  background-color: rgba(var(--color-surface-rgb, 255, 255, 255), 0.75); /* Refined from step 2 */
+}
+
+/* Specific Component Styling for Clear Design */
+
+/* Buttons */
+[data-clear-design="true"] .btn--primary {
+  background-color: rgba(var(--color-primary-rgb, 255, 107, 53), 0.75);
+  border: 1px solid rgba(var(--color-primary-rgb, 255, 107, 53), 0.9);
+  color: var(--color-btn-primary-text); /* Ensure contrast, might need adjustment based on primary-rgb alpha */
+}
+
+[data-clear-design="true"] .btn--primary:hover {
+  background-color: rgba(var(--color-primary-rgb, 255, 107, 53), 0.9);
+  /* transform and box-shadow from general .btn:hover in clear mode still apply */
+}
+
+[data-clear-design="true"] .btn--secondary {
+  background-color: rgba(var(--color-text-rgb, 44, 44, 44), 0.05); /* Default to light theme's text for safety */
+  color: var(--color-text);
+  border: 1px solid rgba(var(--color-text-rgb, 44, 44, 44), 0.1);
+}
+
+[data-clear-design="true"] .btn--secondary:hover {
+  background-color: rgba(var(--color-text-rgb, 44, 44, 44), 0.1);
+}
+
+[data-clear-design="true"] .btn--outline {
+  border-color: rgba(var(--color-text-rgb, 44, 44, 44), 0.3);
+  color: var(--color-text);
+}
+
+[data-clear-design="true"] .btn--outline:hover {
+  background-color: rgba(var(--color-text-rgb, 44, 44, 44), 0.08);
+  border-color: rgba(var(--color-text-rgb, 44, 44, 44), 0.5);
+}
+
+/* Form Controls */
+[data-clear-design="true"] .form-control {
+  background-color: rgba(var(--color-surface-rgb, 255, 255, 255), 0.5);
+  border: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.2);
+  color: var(--color-text);
+}
+
+[data-clear-design="true"] .form-control::placeholder { /* Ensure placeholder visibility */
+  color: rgba(var(--color-text-rgb, 44, 44, 44), 0.6);
+}
+[data-theme="dark"][data-clear-design="true"] .form-control::placeholder {
+    color: rgba(var(--color-text-rgb, 255, 255, 255), 0.5);
+}
+
+
+[data-clear-design="true"] .form-control:focus {
+  background-color: rgba(var(--color-surface-rgb, 255, 255, 255), 0.7);
+  border-color: rgba(var(--color-primary-rgb, 255, 107, 53), 0.8);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb, 255, 107, 53), 0.2);
+}
+
+/* Tables */
+[data-clear-design="true"] .tasks-table th {
+  background-color: rgba(var(--color-text-rgb, 0, 0, 0), 0.05); /* Lighter/more transparent header */
+  color: var(--color-text-secondary);
+}
+
+[data-clear-design="true"] .tasks-table td {
+  border-bottom: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.1);
+}
+
+[data-clear-design="true"] .tasks-table tbody tr:hover {
+  background-color: rgba(var(--color-primary-rgb, 255, 107, 53), 0.08);
+}
+
+/* Kanban Tasks */
+[data-clear-design="true"] .kanban-task {
+  background-color: rgba(var(--color-surface-rgb, 255, 255, 255), 0.6);
+  border: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.15);
+  box-shadow: var(--shadow-sm); /* Overrides the general .kanban-task hover from step 2 for non-hover state */
+}
+
+[data-clear-design="true"] .kanban-task:hover {
+  /* transform and box-shadow from general :hover in clear mode still apply */
+  border-color: rgba(var(--color-primary-rgb, 255, 107, 53), 0.5); /* Refined from step 2 */
+}
+
+/* List View Items */
+[data-clear-design="true"] .task-item {
+  background-color: rgba(var(--color-surface-rgb, 255, 255, 255), 0.6);
+  border: 1px solid rgba(var(--color-border-rgb, 0, 0, 0), 0.15);
+  box-shadow: var(--shadow-sm); /* Overrides the general .task-item hover from step 2 for non-hover state */
+}
+
+[data-clear-design="true"] .task-item:hover {
+    /* transform and box-shadow from general :hover in clear mode still apply */
+    border-color: rgba(var(--color-primary-rgb, 255, 107, 53), 0.5); /* Added for consistency */
 }

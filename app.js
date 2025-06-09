@@ -58,6 +58,9 @@ class NexiaApp {
                 settings_username: 'ユーザーネーム',
                 settings_language: '言語',
                 settings_theme: 'テーマ',
+                settings_clear_design: "クリアデザイン",
+                clear_design_disabled: "無効",
+                clear_design_enabled: "有効",
                 theme_light: 'ライト',
                 theme_dark: 'ダーク',
                 command_placeholder: 'コマンドを入力...',
@@ -82,6 +85,7 @@ class NexiaApp {
                 settings_saved: '設定を保存しました',
                 changelog: '更新履歴',
                 changelog_v1: '初期リリース、多言語対応を追加',
+                changelog_v101_beta_clear_design: "設定に「クリアデザイン」オプションを追加し、余白、滑らかなアニメーション、透明感・ガラス感、立体感を特徴とする新しいUI体験を導入しました。",
                 recurrence_type: '繰り返しタイプ',
                 recurrence_none: 'なし',
                 recurrence_daily: '毎日',
@@ -152,6 +156,9 @@ class NexiaApp {
                 settings_username: 'Username',
                 settings_language: 'Language',
                 settings_theme: 'Theme',
+                settings_clear_design: "Clear Design",
+                clear_design_disabled: "Disabled",
+                clear_design_enabled: "Enabled",
                 theme_light: 'Light',
                 theme_dark: 'Dark',
                 command_placeholder: 'Type a command...',
@@ -176,6 +183,7 @@ class NexiaApp {
                 settings_saved: 'Settings saved',
                 changelog: 'Changelog',
                 changelog_v1: 'Initial release with multi-language support',
+                changelog_v101_beta_clear_design: "Added 'Clear Design' option in settings, introducing a new UI experience featuring enhanced whitespace, smooth animations, transparency/glassmorphism, and a spatial/3D feel.",
                 recurrence_type: 'Recurrence Type',
                 recurrence_none: 'None',
                 recurrence_daily: 'Daily',
@@ -246,6 +254,9 @@ class NexiaApp {
                 settings_username: '사용자 이름',
                 settings_language: '언어',
                 settings_theme: '테마',
+                settings_clear_design: "클리어 디자인",
+                clear_design_disabled: "비활성화",
+                clear_design_enabled: "활성화",
                 theme_light: '라이트',
                 theme_dark: '다크',
                 command_placeholder: '명령 입력...',
@@ -270,6 +281,7 @@ class NexiaApp {
                 settings_saved: '설정이 저장되었습니다',
                 changelog: '변경 기록',
                 changelog_v1: '초기 릴리스, 다국어 지원 추가',
+                changelog_v101_beta_clear_design: "설정에 '클리어 디자인' 옵션을 추가하여 여백, 부드러운 애니메이션, 투명도/유리 질감, 공간적/입체적 느낌을 특징으로 하는 새로운 UI 경험을 도입했습니다.",
                 recurrence_type: '반복 유형',
                 recurrence_none: '없음',
                 recurrence_daily: '매일',
@@ -304,7 +316,8 @@ class NexiaApp {
                 theme: 'light',
                 timerDuration: 25,
                 language: 'ja',
-                username: 'Guest'
+                username: 'Guest',
+                clearDesignEnabled: false
             }
         };
         this.commandPaletteVisible = false;
@@ -321,6 +334,7 @@ class NexiaApp {
         this.applyTranslations();
         this.renderCurrentView();
         this.updateTimer();
+        this.applyClearDesign();
     }
 
     async initDatabase() {
@@ -403,7 +417,8 @@ class NexiaApp {
                 theme: 'light',
                 timerDuration: 25,
                 language: 'ja',
-                username: 'Guest'
+                username: 'Guest',
+                clearDesignEnabled: false
             }
         };
 
@@ -442,6 +457,8 @@ class NexiaApp {
                 document.documentElement.setAttribute('data-theme', this.currentTheme);
                 document.documentElement.setAttribute('lang', this.lang);
                 this.updateThemeButton();
+                this.data.settings.clearDesignEnabled = parsedData.settings.clearDesignEnabled === true; // Default to false if undefined
+                this.applyClearDesign();
             }
         } catch (error) {
             console.error('Error loading data:', error);
@@ -614,12 +631,23 @@ class NexiaApp {
         this.data.settings.username = document.getElementById('usernameInput').value;
         this.data.settings.language = document.getElementById('languageSelect').value;
         this.data.settings.theme = document.getElementById('themeSelect').value;
+        this.data.settings.clearDesignEnabled = document.getElementById('clearDesignSelect').value === 'true';
         this.currentTheme = this.data.settings.theme;
         this.lang = this.data.settings.language;
         document.documentElement.setAttribute('data-theme', this.currentTheme);
+        this.applyClearDesign();
         this.applyTranslations();
         this.saveData();
         alert(this.t('settings_saved'));
+    }
+
+    applyClearDesign() {
+        const isEnabled = this.data.settings.clearDesignEnabled;
+        if (isEnabled) {
+            document.documentElement.setAttribute('data-clear-design', 'true');
+        } else {
+            document.documentElement.removeAttribute('data-clear-design');
+        }
     }
 
     // Sidebar Management
@@ -1199,6 +1227,7 @@ class NexiaApp {
         document.getElementById('usernameInput').value = this.data.settings.username || '';
         document.getElementById('languageSelect').value = this.data.settings.language || 'ja';
         document.getElementById('themeSelect').value = this.data.settings.theme || 'light';
+        document.getElementById('clearDesignSelect').value = this.data.settings.clearDesignEnabled ? 'true' : 'false';
     }
 
     renderChangelogView() {
