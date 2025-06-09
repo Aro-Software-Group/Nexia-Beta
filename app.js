@@ -44,7 +44,10 @@ class NexiaApp {
                 table_priority: '優先度',
                 table_due: '期限',
                 table_tags: 'タグ',
+                table_time: '時間',
                 table_actions: '操作',
+                start_tracking: '計測開始',
+                stop_tracking: '計測停止',
                 kanban_board: 'カンバンボード',
                 todo: 'Todo',
                 in_progress: '進行中',
@@ -135,7 +138,10 @@ class NexiaApp {
                 table_priority: 'Priority',
                 table_due: 'Due',
                 table_tags: 'Tags',
+                table_time: 'Time',
                 table_actions: 'Actions',
+                start_tracking: 'Start',
+                stop_tracking: 'Stop',
                 kanban_board: 'Kanban Board',
                 todo: 'Todo',
                 in_progress: 'In Progress',
@@ -226,7 +232,10 @@ class NexiaApp {
                 table_priority: '우선순위',
                 table_due: '마감',
                 table_tags: '태그',
+                table_time: '시간',
                 table_actions: '동작',
+                start_tracking: '시작',
+                stop_tracking: '정지',
                 kanban_board: '칸반 보드',
                 todo: '할 일',
                 in_progress: '진행 중',
@@ -287,6 +296,7 @@ class NexiaApp {
             type: 'pomodoro',
             customDuration: 25
         };
+        this.taskTimer = { taskId: null, interval: null };
         this.data = {
             pages: [],
             tasks: [],
@@ -416,6 +426,9 @@ class NexiaApp {
                     }
                     if (task.reminderShown === undefined) { // Check if reminderShown is missing
                         task.reminderShown = false;
+                    }
+                    if (task.timeSpent === undefined) {
+                        task.timeSpent = 0;
                     }
                 });
 
@@ -989,7 +1002,8 @@ class NexiaApp {
             const newTask = {
                 id: `task-${Date.now()}`,
                 ...taskData,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                timeSpent: 0
             };
             this.data.tasks.push(newTask);
         }
@@ -1052,8 +1066,10 @@ class NexiaApp {
                 <td>
                     ${task.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                 </td>
+                <td id="timeSpent-${task.id}">${this.formatDuration(task.timeSpent || 0)}</td>
                 <td>
                     <button class="btn btn--sm btn--outline" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">編集</button>
+                    <button class="btn btn--sm btn--outline" id="track-btn-${task.id}" onclick="app.toggleTaskTimer('${task.id}')" style="margin-left: 8px;">${this.taskTimer.taskId === task.id ? this.t('stop_tracking') : this.t('start_tracking')}</button>
                     <button class="btn btn--sm btn--outline" onclick="app.deleteTask('${task.id}')" style="margin-left: 8px; color: var(--color-error);">削除</button>
                 </td>
             </tr>
@@ -1116,7 +1132,7 @@ class NexiaApp {
             const recurrenceIndicator = task.recurrence && task.recurrence.type !== 'none' ? ' 🔄' : '';
             return `
             <div class="task-item" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">
-                <input type="checkbox" class="task-item__check" ${task.completed ? 'checked' : ''} 
+                <input type="checkbox" class="task-item__check" ${task.completed ? 'checked' : ''}
                        onclick="event.stopPropagation(); app.toggleTaskComplete('${task.id}')">
                 <div class="task-item__content">
                     <div class="task-item__title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}${recurrenceIndicator}</div>
@@ -1124,8 +1140,10 @@ class NexiaApp {
                         <span class="priority-badge priority-badge--${task.priority}">${this.getPriorityText(task.priority)}</span>
                         ${task.dueDate ? `<span>期限: ${new Date(task.dueDate).toLocaleDateString('ja-JP')}</span>` : ''}
                         ${task.tags.length > 0 ? `<span>${task.tags.map(tag => `#${tag}`).join(' ')}</span>` : ''}
+                        <span id="timeSpent-${task.id}">${this.formatDuration(task.timeSpent || 0)}</span>
                     </div>
                     ${task.subtasks && task.subtasks.length > 0 ? `<ul class="subtask-list">${task.subtasks.map(st => `<li>${st.title}</li>`).join('')}</ul>` : ''}
+                    <button class="btn btn--sm btn--outline" id="track-btn-${task.id}" onclick="event.stopPropagation(); app.toggleTaskTimer('${task.id}')" style="margin-top:4px;">${this.taskTimer.taskId === task.id ? this.t('stop_tracking') : this.t('start_tracking')}</button>
                 </div>
             </div>
         `}).join('');
@@ -1295,6 +1313,49 @@ class NexiaApp {
         }
     }
 
+    // Task Time Tracking
+    formatDuration(sec) {
+        const h = Math.floor(sec / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        const s = sec % 60;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    toggleTaskTimer(taskId) {
+        if (this.taskTimer.taskId === taskId) {
+            this.stopTaskTimer();
+        } else {
+            this.startTaskTimer(taskId);
+        }
+    }
+
+    startTaskTimer(taskId) {
+        this.stopTaskTimer();
+        this.taskTimer.taskId = taskId;
+        this.taskTimer.interval = setInterval(() => {
+            const task = this.data.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.timeSpent = (task.timeSpent || 0) + 1;
+                const el = document.getElementById(`timeSpent-${task.id}`);
+                if (el) el.textContent = this.formatDuration(task.timeSpent);
+            }
+        }, 1000);
+        const btn = document.getElementById(`track-btn-${taskId}`);
+        if (btn) btn.textContent = this.t('stop_tracking');
+    }
+
+    stopTaskTimer() {
+        if (this.taskTimer.interval) {
+            clearInterval(this.taskTimer.interval);
+        }
+        if (this.taskTimer.taskId) {
+            const btn = document.getElementById(`track-btn-${this.taskTimer.taskId}`);
+            if (btn) btn.textContent = this.t('start_tracking');
+        }
+        this.taskTimer.taskId = null;
+        this.taskTimer.interval = null;
+    }
+
     // Search
     handleSearch(e) {
         const query = e.target.value.toLowerCase();
@@ -1339,8 +1400,10 @@ class NexiaApp {
                 <td>
                     ${task.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                 </td>
+                <td id="timeSpent-${task.id}">${this.formatDuration(task.timeSpent || 0)}</td>
                 <td>
                     <button class="btn btn--sm btn--outline" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">編集</button>
+                    <button class="btn btn--sm btn--outline" id="track-btn-${task.id}" onclick="app.toggleTaskTimer('${task.id}')" style="margin-left: 8px;">${this.taskTimer.taskId === task.id ? this.t('stop_tracking') : this.t('start_tracking')}</button>
                     <button class="btn btn--sm btn--outline" onclick="app.deleteTask('${task.id}')" style="margin-left: 8px; color: var(--color-error);">削除</button>
                 </td>
             </tr>
@@ -1353,7 +1416,7 @@ class NexiaApp {
             const recurrenceIndicator = task.recurrence && task.recurrence.type !== 'none' ? ' 🔄' : '';
             return `
             <div class="task-item" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">
-                <input type="checkbox" class="task-item__check" ${task.completed ? 'checked' : ''} 
+                <input type="checkbox" class="task-item__check" ${task.completed ? 'checked' : ''}
                        onclick="event.stopPropagation(); app.toggleTaskComplete('${task.id}')">
                 <div class="task-item__content">
                     <div class="task-item__title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}${recurrenceIndicator}</div>
@@ -1361,7 +1424,9 @@ class NexiaApp {
                         <span class="priority-badge priority-badge--${task.priority}">${this.getPriorityText(task.priority)}</span>
                         ${task.dueDate ? `<span>期限: ${new Date(task.dueDate).toLocaleDateString('ja-JP')}</span>` : ''}
                         ${task.tags.length > 0 ? `<span>${task.tags.map(tag => `#${tag}`).join(' ')}</span>` : ''}
+                        <span id="timeSpent-${task.id}">${this.formatDuration(task.timeSpent || 0)}</span>
                     </div>
+                    <button class="btn btn--sm btn--outline" id="track-btn-${task.id}" onclick="event.stopPropagation(); app.toggleTaskTimer('${task.id}')" style="margin-top:4px;">${this.taskTimer.taskId === task.id ? this.t('stop_tracking') : this.t('start_tracking')}</button>
                 </div>
             </div>
         `}).join('');
