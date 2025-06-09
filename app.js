@@ -266,8 +266,24 @@ class NexiaApp {
     }
 
     async initDatabase() {
-        // Using localStorage as fallback for IndexedDB
-        if (!localStorage.getItem('nexia_data')) {
+        let needsInitialization = true;
+        const storedData = localStorage.getItem('nexia_data');
+
+        if (storedData) {
+            try {
+                const parsedData = JSON.parse(storedData);
+                // Check for essential structure, e.g., if pages array exists
+                if (parsedData && Array.isArray(parsedData.pages)) {
+                    needsInitialization = false;
+                }
+            } catch (e) {
+                // JSON parsing failed, so data is corrupt, needs re-initialization
+                console.warn('Corrupted data found in localStorage, re-initializing.', e);
+            }
+        }
+
+        if (needsInitialization) {
+            console.log('Initializing with default data.');
             const defaultData = {
                 pages: [
                     {
@@ -320,10 +336,31 @@ class NexiaApp {
     }
 
     async loadData() {
+        // Initialize with a base structure to ensure critical parts are defined
+        this.data = {
+            pages: [],
+            tasks: [],
+            settings: {
+                theme: 'light',
+                timerDuration: 25,
+                language: 'ja',
+                username: 'Guest'
+            }
+        };
+
         try {
             const stored = localStorage.getItem('nexia_data');
             if (stored) {
-                this.data = JSON.parse(stored);
+                const parsedData = JSON.parse(stored);
+
+                // Merge stored data, ensuring pages and tasks are arrays
+                this.data.pages = Array.isArray(parsedData.pages) ? parsedData.pages : [];
+                this.data.tasks = Array.isArray(parsedData.tasks) ? parsedData.tasks : [];
+
+                if (parsedData.settings) {
+                    this.data.settings = { ...this.data.settings, ...parsedData.settings };
+                }
+
                 this.currentTheme = this.data.settings.theme || 'light';
                 this.lang = this.data.settings.language || 'ja';
                 document.documentElement.setAttribute('data-theme', this.currentTheme);
@@ -332,6 +369,7 @@ class NexiaApp {
             }
         } catch (error) {
             console.error('Error loading data:', error);
+            // this.data is already initialized with safe defaults, so app can continue
         }
     }
 
