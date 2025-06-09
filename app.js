@@ -57,6 +57,8 @@ class NexiaApp {
                 settings_theme: 'テーマ',
                 theme_light: 'ライト',
                 theme_dark: 'ダーク',
+                resume: '再開',
+                running: '実行中...',
                 command_placeholder: 'コマンドを入力...',
                 cmd_new_task: '新しいタスク',
                 cmd_new_page: '新しいページ',
@@ -132,6 +134,8 @@ class NexiaApp {
                 settings_theme: 'Theme',
                 theme_light: 'Light',
                 theme_dark: 'Dark',
+                resume: 'Resume',
+                running: 'Running...',
                 command_placeholder: 'Type a command...',
                 cmd_new_task: 'New Task',
                 cmd_new_page: 'New Page',
@@ -207,6 +211,8 @@ class NexiaApp {
                 settings_theme: '테마',
                 theme_light: '라이트',
                 theme_dark: '다크',
+                resume: '계속',
+                running: '실행 중...',
                 command_placeholder: '명령 입력...',
                 cmd_new_task: '새 작업',
                 cmd_new_page: '새 페이지',
@@ -435,6 +441,11 @@ class NexiaApp {
                 }
             });
         }
+
+        const pageSettingsBtn = document.getElementById('pageSettingsBtn');
+        if (pageSettingsBtn) pageSettingsBtn.addEventListener('click', () => {
+            window.location.href = 'settings.html';
+        });
 
         const saveSettingsBtn = document.getElementById('saveSettingsBtn');
         if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', this.saveSettings.bind(this));
@@ -1028,7 +1039,7 @@ class NexiaApp {
                 this.updateTimer();
             }, 1000);
             
-            document.getElementById('startTimer').textContent = '実行中...';
+            document.getElementById('startTimer').textContent = this.t('running');
         }
     }
 
@@ -1037,7 +1048,7 @@ class NexiaApp {
             this.timer.isRunning = false;
             this.timer.isPaused = true;
             clearInterval(this.timer.interval);
-            document.getElementById('startTimer').textContent = '再開';
+            document.getElementById('startTimer').textContent = this.t('resume');
         }
     }
 
@@ -1056,7 +1067,7 @@ class NexiaApp {
         }
         
         this.updateTimer();
-        document.getElementById('startTimer').textContent = '開始';
+        document.getElementById('startTimer').textContent = this.t('start');
     }
 
     changeTimerType() {
