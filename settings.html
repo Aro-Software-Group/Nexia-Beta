@@ -90,7 +90,7 @@
                 <div class="sidebar__section">
                     <h3 class="sidebar__title" data-i18n="others">その他</h3>
                     <ul class="sidebar__list">
-                        <li class="sidebar__item">
+                        <li class="sidebar__item sidebar__item--active">
                             <a href="settings.html" data-i18n="settings">⚙️ 設定</a>
                         </li>
                         <li class="sidebar__item">
@@ -104,7 +104,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Content Views -->
-            <div class="content-view" id="editorView">
+            <div class="content-view hidden" id="editorView">
                 <div class="page-header">
                     <h2 id="pageTitle">ページタイトル</h2>
                     <div class="page-actions">
@@ -203,6 +203,34 @@
                 </div>
             </div>
 
+            <div class="content-view" id="settingsView">
+                <div class="view-header">
+                    <h2 data-i18n="settings">設定</h2>
+                </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="settings_username">ユーザーネーム</label>
+                        <input type="text" class="form-control" id="usernameInput">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="settings_language">言語</label>
+                        <select class="form-control" id="languageSelect">
+                            <option value="ja">日本語</option>
+                            <option value="en">English</option>
+                            <option value="ko">한국어</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="settings_theme">テーマ</label>
+                        <select class="form-control" id="themeSelect">
+                            <option value="light" data-i18n="theme_light">ライト</option>
+                            <option value="dark" data-i18n="theme_dark">ダーク</option>
+                        </select>
+                    </div>
+                    <button class="btn--primary" id="saveSettingsBtn" data-i18n="save">保存</button>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -265,5 +293,12 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.app) {
+                app.switchView('settings');
+            }
+        });
+    </script>
 </body>
 </html>
