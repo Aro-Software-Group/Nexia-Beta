@@ -78,7 +78,23 @@ class NexiaApp {
                 minutes_placeholder: '分',
                 settings_saved: '設定を保存しました',
                 changelog: '更新履歴',
-                changelog_v1: '初期リリース、多言語対応を追加'
+                changelog_v1: '初期リリース、多言語対応を追加',
+                recurrence_type: '繰り返しタイプ',
+                recurrence_none: 'なし',
+                recurrence_daily: '毎日',
+                recurrence_weekly: '毎週',
+                recurrence_monthly: '毎月',
+                recurrence_interval: '間隔 (例: 1 = 毎日/毎週/毎月)',
+                task_reminder: 'リマインダー設定',
+                reminder_triggered_title: 'タスクリマインダー',
+                reminder_triggered_body: 'タスク「%taskName%」の時間です!',
+                dashboard: 'ダッシュボード',
+                dashboard_title: 'ダッシュボード',
+                tasks_overview: 'タスク概要',
+                total_tasks: '総タスク数:',
+                completed_tasks: '完了タスク:',
+                pending_tasks: '未完了タスク:',
+                task_status_chart: 'タスクステータス'
             },
             en: {
                 app_name: 'Nexia Beta',
@@ -153,7 +169,23 @@ class NexiaApp {
                 minutes_placeholder: 'min',
                 settings_saved: 'Settings saved',
                 changelog: 'Changelog',
-                changelog_v1: 'Initial release with multi-language support'
+                changelog_v1: 'Initial release with multi-language support',
+                recurrence_type: 'Recurrence Type',
+                recurrence_none: 'None',
+                recurrence_daily: 'Daily',
+                recurrence_weekly: 'Weekly',
+                recurrence_monthly: 'Monthly',
+                recurrence_interval: 'Interval (e.g., 1 for every day/week/month)',
+                task_reminder: 'Set Reminder',
+                reminder_triggered_title: 'Task Reminder',
+                reminder_triggered_body: 'It\'s time for your task: "%taskName%"!',
+                dashboard: 'Dashboard',
+                dashboard_title: 'Dashboard',
+                tasks_overview: 'Tasks Overview',
+                total_tasks: 'Total Tasks:',
+                completed_tasks: 'Completed Tasks:',
+                pending_tasks: 'Pending Tasks:',
+                task_status_chart: 'Task Status'
             },
             ko: {
                 app_name: 'Nexia Beta',
@@ -228,7 +260,23 @@ class NexiaApp {
                 minutes_placeholder: '분',
                 settings_saved: '설정이 저장되었습니다',
                 changelog: '변경 기록',
-                changelog_v1: '초기 릴리스, 다국어 지원 추가'
+                changelog_v1: '초기 릴리스, 다국어 지원 추가',
+                recurrence_type: '반복 유형',
+                recurrence_none: '없음',
+                recurrence_daily: '매일',
+                recurrence_weekly: '매주',
+                recurrence_monthly: '매월',
+                recurrence_interval: '간격 (예: 1 = 매일/매주/매월)',
+                task_reminder: '리마인더 설정',
+                reminder_triggered_title: '작업 알림',
+                reminder_triggered_body: '작업 "%taskName%" 시간입니다!',
+                dashboard: '대시보드',
+                dashboard_title: '대시보드',
+                tasks_overview: '작업 개요',
+                total_tasks: '총 작업 수:',
+                completed_tasks: '완료된 작업:',
+                pending_tasks: '보류 중인 작업:',
+                task_status_chart: '작업 상태'
             }
         };
         this.timer = {
@@ -322,6 +370,7 @@ class NexiaApp {
                         subtasks: [],
                         createdAt: new Date().toISOString(),
                         status: 'todo'
+                        // recurrence will be added dynamically if not present
                     }
                 ],
                 settings: {
@@ -356,6 +405,20 @@ class NexiaApp {
                 // Merge stored data, ensuring pages and tasks are arrays
                 this.data.pages = Array.isArray(parsedData.pages) ? parsedData.pages : [];
                 this.data.tasks = Array.isArray(parsedData.tasks) ? parsedData.tasks : [];
+
+                // Ensure all tasks have a recurrence field (for backward compatibility)
+                this.data.tasks.forEach(task => {
+                    if (!task.recurrence) {
+                        task.recurrence = { type: 'none', interval: 1 };
+                    }
+                    if (task.reminderDate === undefined) { // Check if reminderDate is missing
+                        task.reminderDate = null;
+                    }
+                    if (task.reminderShown === undefined) { // Check if reminderShown is missing
+                        task.reminderShown = false;
+                    }
+                });
+
 
                 if (parsedData.settings) {
                     this.data.settings = { ...this.data.settings, ...parsedData.settings };
@@ -600,8 +663,69 @@ class NexiaApp {
             case 'changelog':
                 this.renderChangelogView();
                 break;
+                case 'dashboard':
+                    this.renderDashboardView();
+                    break;
         }
         this.applyTranslations();
+    }
+
+    renderDashboardView() {
+        document.getElementById('totalTasks').textContent = this.data.tasks.length;
+        const completedCount = this.data.tasks.filter(t => t.completed).length;
+        document.getElementById('completedTasksCount').textContent = completedCount;
+        document.getElementById('pendingTasksCount').textContent = this.data.tasks.length - completedCount;
+
+        const chartContainer = document.getElementById('taskStatusChart');
+        chartContainer.innerHTML = ''; // Clear previous chart
+
+        const statuses = { todo: 0, 'in-progress': 0, completed: 0 };
+        this.data.tasks.forEach(task => {
+            if (task.completed) statuses.completed++;
+            else if (task.status === 'in-progress') statuses['in-progress']++;
+            else statuses.todo++; // Default to 'todo' if not 'in-progress' and not completed
+        });
+
+        const totalForChart = this.data.tasks.length || 1; // Avoid division by zero for percentages
+        const barColors = { todo: '#ffc107', 'in-progress': '#0dcaf0', completed: '#198754' };
+        const statusTranslations = { // Add translations for chart tooltips/labels if needed
+            todo: this.t('todo') || 'Todo',
+            'in-progress': this.t('in_progress') || 'In Progress',
+            completed: this.t('completed') || 'Completed'
+        };
+
+
+        for (const status in statuses) {
+            const count = statuses[status];
+            const percentage = (count / totalForChart) * 100;
+
+            const barWrapper = document.createElement('div');
+            barWrapper.style.display = 'flex';
+            barWrapper.style.flexDirection = 'column';
+            barWrapper.style.alignItems = 'center';
+            barWrapper.style.width = '30%';
+            barWrapper.style.height = '100%'; // Wrapper takes full height for alignment
+            barWrapper.style.position = 'relative'; // For text positioning
+
+            const bar = document.createElement('div');
+            bar.style.width = '100%';
+            bar.style.height = percentage + '%';
+            bar.style.backgroundColor = barColors[status];
+            bar.style.borderRadius = '4px 4px 0 0'; // Rounded top corners
+            bar.title = `${statusTranslations[status]}: ${count}`;
+
+            const barLabel = document.createElement('div');
+            barLabel.textContent = `${statusTranslations[status]} (${Math.round(percentage)}%)`;
+            barLabel.style.fontSize = '10px';
+            barLabel.style.marginTop = '4px';
+            barLabel.style.textAlign = 'center';
+            barLabel.style.color = 'var(--color-text-secondary)';
+
+            barWrapper.appendChild(bar);
+            barWrapper.appendChild(barLabel);
+            chartContainer.appendChild(barWrapper);
+        }
+        this.applyTranslations(); // Re-apply for any new elements
     }
 
     // Page Management
@@ -759,6 +883,13 @@ class NexiaApp {
         const title = document.getElementById('taskModalTitle');
         const form = document.getElementById('taskForm');
 
+        // Recurrence elements
+        const taskRecurrenceTypeEl = document.getElementById('taskRecurrenceType');
+        const taskRecurrenceIntervalEl = document.getElementById('taskRecurrenceInterval');
+        const recurrenceIntervalGroupEl = document.getElementById('recurrenceIntervalGroup');
+        const taskReminderDateEl = document.getElementById('taskReminderDate');
+
+
         if (task) {
             title.textContent = this.t('task_modal_title');
             document.getElementById('taskTitle').value = task.title || '';
@@ -767,14 +898,50 @@ class NexiaApp {
             document.getElementById('taskDueDate').value = task.dueDate || '';
             document.getElementById('taskTags').value = task.tags ? task.tags.join(', ') : '';
             document.getElementById('taskSubtasks').value = task.subtasks ? task.subtasks.map(st => st.title).join('\n') : '';
+
+            // Populate recurrence fields
+            if (task.recurrence) {
+                taskRecurrenceTypeEl.value = task.recurrence.type || 'none';
+                taskRecurrenceIntervalEl.value = task.recurrence.interval || 1;
+            } else {
+                taskRecurrenceTypeEl.value = 'none';
+                taskRecurrenceIntervalEl.value = 1;
+            }
+
+            // Populate reminder field
+            taskReminderDateEl.value = task.reminderDate ? task.reminderDate.slice(0, 16) : ''; // Format for datetime-local
+
         } else {
             title.textContent = this.t('cmd_new_task');
             form.reset();
             document.getElementById('taskSubtasks').value = '';
+            taskRecurrenceTypeEl.value = 'none';
+            taskRecurrenceIntervalEl.value = 1;
+            taskReminderDateEl.value = ''; // Clear reminder for new task
         }
+
+        // Show/hide interval group based on recurrence type
+        recurrenceIntervalGroupEl.style.display = taskRecurrenceTypeEl.value === 'none' ? 'none' : 'block';
+
+        // Event listener for recurrence type change
+        // Remove old listener to prevent duplicates if modal is reshown
+        taskRecurrenceTypeEl.removeEventListener('change', this.handleRecurrenceTypeChange);
+        taskRecurrenceTypeEl.addEventListener('change', this.handleRecurrenceTypeChange.bind(this));
+
 
         modal.classList.add('active');
     }
+
+    handleRecurrenceTypeChange() {
+        const taskRecurrenceTypeEl = document.getElementById('taskRecurrenceType');
+        const recurrenceIntervalGroupEl = document.getElementById('recurrenceIntervalGroup');
+        if (taskRecurrenceTypeEl.value === 'none') {
+            recurrenceIntervalGroupEl.style.display = 'none';
+        } else {
+            recurrenceIntervalGroupEl.style.display = 'block';
+        }
+    }
+
 
     hideTaskModal() {
         const modal = document.getElementById('taskModal');
@@ -786,6 +953,10 @@ class NexiaApp {
         const title = document.getElementById('taskTitle').value.trim();
         if (!title) return;
 
+        const recurrenceType = document.getElementById('taskRecurrenceType').value;
+        const recurrenceInterval = parseInt(document.getElementById('taskRecurrenceInterval').value, 10) || 1;
+        const reminderDateValue = document.getElementById('taskReminderDate').value;
+
         const taskData = {
             title: title,
             description: document.getElementById('taskDescription').value.trim(),
@@ -793,15 +964,28 @@ class NexiaApp {
             dueDate: document.getElementById('taskDueDate').value || null,
             tags: document.getElementById('taskTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
             subtasks: document.getElementById('taskSubtasks').value.split('\n').map(t => t.trim()).filter(t => t).map(t => ({ id: `sub-${Date.now()}-${Math.random().toString(36).slice(2,5)}`, title: t, completed: false })),
-            completed: false,
-            status: 'todo'
+            completed: false, // Default for new/edited tasks unless status says otherwise
+            status: this.editingTask ? this.editingTask.status : 'todo', // Preserve status if editing
+            recurrence: {
+                type: recurrenceType,
+                interval: recurrenceInterval
+            },
+            reminderDate: reminderDateValue ? new Date(reminderDateValue).toISOString() : null
         };
 
+        if (taskData.status === 'completed') {
+            taskData.completed = true;
+        }
+
+        // If reminder has changed or is newly set, reset reminderShown
         if (this.editingTask) {
-            // Update existing task
+            if (this.editingTask.reminderDate !== taskData.reminderDate) {
+                this.editingTask.reminderShown = false;
+            }
             Object.assign(this.editingTask, taskData);
         } else {
-            // Create new task
+            // For new tasks, if reminderDate is set, reminderShown should be false
+            taskData.reminderShown = false;
             const newTask = {
                 id: `task-${Date.now()}`,
                 ...taskData,
@@ -848,14 +1032,16 @@ class NexiaApp {
         const tbody = document.getElementById('tasksTableBody');
         const tasks = this.getFilteredTasks();
         
-        tbody.innerHTML = tasks.map(task => `
+        tbody.innerHTML = tasks.map(task => {
+            const recurrenceIndicator = task.recurrence && task.recurrence.type !== 'none' ? ' 🔄' : '';
+            return `
             <tr>
                 <td>
                     <input type="checkbox" ${task.completed ? 'checked' : ''} 
                            onchange="app.toggleTaskComplete('${task.id}')">
                 </td>
                 <td>
-                    <div class="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
+                    <div class="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}${recurrenceIndicator}</div>
                     ${task.description ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">${task.description}</div>` : ''}
                     ${task.subtasks && task.subtasks.length > 0 ? `<ul class="subtask-list">${task.subtasks.map(st => `<li>${st.title}</li>`).join('')}</ul>` : ''}
                 </td>
@@ -871,13 +1057,13 @@ class NexiaApp {
                     <button class="btn btn--sm btn--outline" onclick="app.deleteTask('${task.id}')" style="margin-left: 8px; color: var(--color-error);">削除</button>
                 </td>
             </tr>
-        `).join('');
+        `}).join('');
     }
 
     renderKanbanView() {
-        const todoTasks = this.data.tasks.filter(task => !task.completed);
+        const todoTasks = this.data.tasks.filter(task => task.status === 'todo');
         const inProgressTasks = this.data.tasks.filter(task => task.status === 'in-progress');
-        const completedTasks = this.data.tasks.filter(task => task.completed);
+        const completedTasks = this.data.tasks.filter(task => task.status === 'completed');
 
         document.getElementById('todoTasks').innerHTML = todoTasks.map(task => this.renderKanbanTask(task)).join('');
         document.getElementById('inProgressTasks').innerHTML = inProgressTasks.map(task => this.renderKanbanTask(task)).join('');
@@ -886,9 +1072,10 @@ class NexiaApp {
     }
 
     renderKanbanTask(task) {
+        const recurrenceIndicator = task.recurrence && task.recurrence.type !== 'none' ? ' 🔄' : '';
         return `
             <div class="kanban-task" draggable="true" data-id="${task.id}" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">
-                <div style="font-weight: 500; margin-bottom: 8px;">${task.title}</div>
+                <div style="font-weight: 500; margin-bottom: 8px;">${task.title}${recurrenceIndicator}</div>
                 ${task.description ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 8px;">${task.description}</div>` : ''}
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span class="priority-badge priority-badge--${task.priority}">${this.getPriorityText(task.priority)}</span>
@@ -925,12 +1112,14 @@ class NexiaApp {
         const list = document.getElementById('tasksList');
         const tasks = this.getFilteredTasks();
         
-        list.innerHTML = tasks.map(task => `
+        list.innerHTML = tasks.map(task => {
+            const recurrenceIndicator = task.recurrence && task.recurrence.type !== 'none' ? ' 🔄' : '';
+            return `
             <div class="task-item" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">
                 <input type="checkbox" class="task-item__check" ${task.completed ? 'checked' : ''} 
                        onclick="event.stopPropagation(); app.toggleTaskComplete('${task.id}')">
                 <div class="task-item__content">
-                    <div class="task-item__title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
+                    <div class="task-item__title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}${recurrenceIndicator}</div>
                     <div class="task-item__meta">
                         <span class="priority-badge priority-badge--${task.priority}">${this.getPriorityText(task.priority)}</span>
                         ${task.dueDate ? `<span>期限: ${new Date(task.dueDate).toLocaleDateString('ja-JP')}</span>` : ''}
@@ -939,7 +1128,7 @@ class NexiaApp {
                     ${task.subtasks && task.subtasks.length > 0 ? `<ul class="subtask-list">${task.subtasks.map(st => `<li>${st.title}</li>`).join('')}</ul>` : ''}
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     renderCalendarView() {
@@ -1117,8 +1306,8 @@ class NexiaApp {
         // Filter tasks based on search query
         const filteredTasks = this.data.tasks.filter(task => 
             task.title.toLowerCase().includes(query) ||
-            task.description.toLowerCase().includes(query) ||
-            task.tags.some(tag => tag.toLowerCase().includes(query))
+            (task.description && task.description.toLowerCase().includes(query)) || // Check if description exists
+            (task.tags && task.tags.some(tag => tag.toLowerCase().includes(query))) // Check if tags exist
         );
 
         // Update current view with filtered results
@@ -1131,14 +1320,16 @@ class NexiaApp {
 
     renderFilteredTableView(tasks) {
         const tbody = document.getElementById('tasksTableBody');
-        tbody.innerHTML = tasks.map(task => `
+        tbody.innerHTML = tasks.map(task => {
+            const recurrenceIndicator = task.recurrence && task.recurrence.type !== 'none' ? ' 🔄' : '';
+            return `
             <tr>
                 <td>
                     <input type="checkbox" ${task.completed ? 'checked' : ''} 
                            onchange="app.toggleTaskComplete('${task.id}')">
                 </td>
                 <td>
-                    <div class="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
+                    <div class="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}${recurrenceIndicator}</div>
                     ${task.description ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">${task.description}</div>` : ''}
                 </td>
                 <td>
@@ -1153,17 +1344,19 @@ class NexiaApp {
                     <button class="btn btn--sm btn--outline" onclick="app.deleteTask('${task.id}')" style="margin-left: 8px; color: var(--color-error);">削除</button>
                 </td>
             </tr>
-        `).join('');
+        `}).join('');
     }
 
     renderFilteredListView(tasks) {
         const list = document.getElementById('tasksList');
-        list.innerHTML = tasks.map(task => `
+        list.innerHTML = tasks.map(task => {
+            const recurrenceIndicator = task.recurrence && task.recurrence.type !== 'none' ? ' 🔄' : '';
+            return `
             <div class="task-item" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">
                 <input type="checkbox" class="task-item__check" ${task.completed ? 'checked' : ''} 
                        onclick="event.stopPropagation(); app.toggleTaskComplete('${task.id}')">
                 <div class="task-item__content">
-                    <div class="task-item__title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
+                    <div class="task-item__title" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}${recurrenceIndicator}</div>
                     <div class="task-item__meta">
                         <span class="priority-badge priority-badge--${task.priority}">${this.getPriorityText(task.priority)}</span>
                         ${task.dueDate ? `<span>期限: ${new Date(task.dueDate).toLocaleDateString('ja-JP')}</span>` : ''}
@@ -1171,7 +1364,7 @@ class NexiaApp {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     // Command Palette
@@ -1263,6 +1456,12 @@ class NexiaApp {
                 if (parsed.pages && parsed.tasks) {
                     this.data.pages = parsed.pages;
                     this.data.tasks = parsed.tasks;
+                     // Ensure all imported tasks have a recurrence field
+                    this.data.tasks.forEach(task => {
+                        if (!task.recurrence) {
+                            task.recurrence = { type: 'none', interval: 1 };
+                        }
+                    });
                     this.data.settings = parsed.settings || this.data.settings;
                     this.saveData();
                     this.renderPagesList();
@@ -1288,11 +1487,58 @@ class NexiaApp {
         this.renderPagesList();
         this.switchView('editor');
         this.changeTimerType();
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+
+        // Check reminders periodically and once on load
+        this.checkReminders(); // Initial check
+        setInterval(this.checkReminders.bind(this), 60000); // Check every minute
+    }
+
+    showNotification(title, body) {
+        if (!('Notification' in window)) {
+            console.warn('This browser does not support desktop notification');
+            return;
+        }
+
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body: body, icon: './favicon.ico' }); // Assuming favicon is in root
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification(title, { body: body, icon: './favicon.ico' });
+                }
+            });
+        }
+    }
+
+    checkReminders() {
+        const now = new Date();
+        this.data.tasks.forEach(task => {
+            if (!task.completed && task.reminderDate && !task.reminderShown) {
+                const reminderDateTime = new Date(task.reminderDate);
+                if (reminderDateTime <= now) {
+                    const body = this.t('reminder_triggered_body').replace('%taskName%', task.title);
+                    this.showNotification(this.t('reminder_triggered_title'), body);
+                    task.reminderShown = true;
+                    // Potentially call saveData here if you want reminderShown to persist immediately
+                    // this.saveData();
+                }
+            }
+        });
+        // If reminderShown was changed for any task and needs to be persisted without waiting for other saves:
+        if (this.data.tasks.some(t => t.reminderShown === true && !localStorage.getItem('nexia_data').includes(`"id":"${t.id}","reminderShown":true`))) {
+             this.saveData(); // Save if any reminderShown was just updated and not yet persisted
+        }
     }
 }
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new NexiaApp();
+    // app.start(); // start is async, ensure it's handled if needed. For now, direct call is fine.
     app.start();
 });
