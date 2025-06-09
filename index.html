@@ -18,13 +18,13 @@
                 </svg>
             </button>
             <div class="header__logo">
-                <h1>Nexia Beta</h1>
-                <span class="header__tagline">Connect. Organize. Achieve.</span>
+<h1 data-i18n="app_name">Nexia Beta</h1>
+<span class="header__tagline" data-i18n="tagline">Connect. Organize. Achieve.</span>
             </div>
         </div>
         <div class="header__center">
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="検索..." class="form-control">
+<input type="text" id="searchInput" class="form-control" data-i18n-placeholder="search_placeholder">
                 <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="M21 21l-4.35-4.35"></path>
@@ -33,7 +33,7 @@
         </div>
         <div class="header__right">
             <button class="btn--secondary btn--sm" id="themeToggle">🌙</button>
-            <button class="btn--primary btn--sm" id="addButton">+ 新規</button>
+<button class="btn--primary btn--sm" id="addButton" data-i18n="add_new">+ 新規</button>
         </div>
     </header>
 
@@ -43,48 +43,60 @@
         <aside class="sidebar" id="sidebar">
             <nav class="sidebar__nav">
                 <div class="sidebar__section">
-                    <h3 class="sidebar__title">ページ</h3>
+                    <h3 class="sidebar__title" data-i18n="pages">ページ</h3>
                     <ul class="sidebar__list" id="pagesList">
                         <li class="sidebar__item sidebar__item--active">
                             <a href="#" data-page="welcome">📝 ようこそ</a>
                         </li>
                     </ul>
-                    <button class="btn--outline btn--sm sidebar__add-btn" id="addPageBtn">+ ページ追加</button>
+                    <button class="btn--outline btn--sm sidebar__add-btn" id="addPageBtn" data-i18n="add_page">+ ページ追加</button>
                 </div>
                 
                 <div class="sidebar__section">
-                    <h3 class="sidebar__title">表示</h3>
+                    <h3 class="sidebar__title" data-i18n="views">表示</h3>
                     <ul class="sidebar__list">
                         <li class="sidebar__item">
-                            <button class="view-toggle" data-view="table">📊 テーブル</button>
+                            <button class="view-toggle" data-view="table" data-i18n="table">📊 テーブル</button>
                         </li>
                         <li class="sidebar__item">
-                            <button class="view-toggle" data-view="kanban">📋 カンバン</button>
+                            <button class="view-toggle" data-view="kanban" data-i18n="kanban">📋 カンバン</button>
                         </li>
                         <li class="sidebar__item">
-                            <button class="view-toggle" data-view="list">📄 リスト</button>
+                            <button class="view-toggle" data-view="list" data-i18n="list">📄 リスト</button>
                         </li>
                         <li class="sidebar__item">
-                            <button class="view-toggle" data-view="calendar">📅 カレンダー</button>
+                            <button class="view-toggle" data-view="calendar" data-i18n="calendar">📅 カレンダー</button>
                         </li>
                     </ul>
                 </div>
 
                 <div class="sidebar__section">
-                    <h3 class="sidebar__title">タイマー</h3>
+                    <h3 class="sidebar__title" data-i18n="timer">タイマー</h3>
                     <div class="timer-widget">
                         <div class="timer-display" id="timerDisplay">25:00</div>
                         <div class="timer-controls">
-                            <button class="btn--sm btn--primary" id="startTimer">開始</button>
-                            <button class="btn--sm btn--secondary" id="pauseTimer">一時停止</button>
-                            <button class="btn--sm btn--outline" id="resetTimer">リセット</button>
+                            <button class="btn--sm btn--primary" id="startTimer" data-i18n="start">開始</button>
+                            <button class="btn--sm btn--secondary" id="pauseTimer" data-i18n="pause">一時停止</button>
+                            <button class="btn--sm btn--outline" id="resetTimer" data-i18n="reset">リセット</button>
                         </div>
                         <select class="form-control timer-select" id="timerType">
-                            <option value="pomodoro">ポモドーロ (25分)</option>
-                            <option value="custom">カスタム</option>
-                            <option value="stopwatch">ストップウォッチ</option>
+                            <option value="pomodoro" data-i18n="pomodoro">ポモドーロ (25分)</option>
+                            <option value="custom" data-i18n="custom">カスタム</option>
+                            <option value="stopwatch" data-i18n="stopwatch">ストップウォッチ</option>
                         </select>
+                        <input type="number" class="form-control timer-custom" id="customTimerInput" min="1" value="25" data-i18n-placeholder="minutes" style="display:none; margin-top:8px;">
                     </div>
+                </div>
+                <div class="sidebar__section">
+                    <h3 class="sidebar__title" data-i18n="others">その他</h3>
+                    <ul class="sidebar__list">
+                        <li class="sidebar__item">
+                            <button class="view-toggle" data-view="settings" data-i18n="settings">⚙️ 設定</button>
+                        </li>
+                        <li class="sidebar__item">
+                            <button class="view-toggle" data-view="changelog" data-i18n="changelog">🕑 更新履歴</button>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         </aside>
@@ -96,45 +108,47 @@
                 <div class="page-header">
                     <h2 id="pageTitle">ページタイトル</h2>
                     <div class="page-actions">
-                        <button class="btn--outline btn--sm" id="exportBtn">エクスポート</button>
-                        <button class="btn--secondary btn--sm" id="pageSettingsBtn">設定</button>
+                        <button class="btn--outline btn--sm" id="exportBtn" data-i18n="export">エクスポート</button>
+                        <button class="btn--outline btn--sm" id="importBtn" data-i18n="import">インポート</button>
+                        <input type="file" id="importInput" accept="application/json" style="display:none">
+                        <button class="btn--secondary btn--sm" id="pageSettingsBtn" data-i18n="page_settings">設定</button>
                     </div>
                 </div>
                 <div class="editor-container" id="editorContainer">
                     <!-- Dynamic blocks will be inserted here -->
                 </div>
                 <div class="add-block-menu" id="addBlockMenu">
-                    <button class="add-block-btn" data-type="heading">📝 見出し</button>
-                    <button class="add-block-btn" data-type="text">📄 テキスト</button>
-                    <button class="add-block-btn" data-type="task">✅ タスク</button>
-                    <button class="add-block-btn" data-type="checklist">☑️ チェックリスト</button>
-                    <button class="add-block-btn" data-type="divider">➖ 区切り線</button>
+                    <button class="add-block-btn" data-type="heading" data-i18n="block_heading">📝 見出し</button>
+                    <button class="add-block-btn" data-type="text" data-i18n="block_text">📄 テキスト</button>
+                    <button class="add-block-btn" data-type="task" data-i18n="block_task">✅ タスク</button>
+                    <button class="add-block-btn" data-type="checklist" data-i18n="block_checklist">☑️ チェックリスト</button>
+                    <button class="add-block-btn" data-type="divider" data-i18n="block_divider">➖ 区切り線</button>
                 </div>
             </div>
 
             <div class="content-view hidden" id="tableView">
                 <div class="view-header">
-                    <h2>タスク一覧</h2>
+                    <h2 data-i18n="tasks_list">タスク一覧</h2>
                     <div class="view-controls">
                         <select class="form-control" id="filterPriority">
-                            <option value="">すべての優先度</option>
-                            <option value="high">高</option>
-                            <option value="medium">中</option>
-                            <option value="low">低</option>
+                            <option value="" data-i18n="all_priorities">すべての優先度</option>
+                            <option value="high" data-i18n="priority_high">高</option>
+                            <option value="medium" data-i18n="priority_medium">中</option>
+                            <option value="low" data-i18n="priority_low">低</option>
                         </select>
-                        <button class="btn--primary btn--sm" id="addTaskBtn">+ タスク追加</button>
+                        <button class="btn--primary btn--sm" id="addTaskBtn" data-i18n="add_task">+ タスク追加</button>
                     </div>
                 </div>
                 <div class="table-container">
                     <table class="tasks-table">
                         <thead>
                             <tr>
-                                <th>完了</th>
-                                <th>タスク名</th>
-                                <th>優先度</th>
-                                <th>期限</th>
-                                <th>タグ</th>
-                                <th>操作</th>
+                                <th data-i18n="table_complete">完了</th>
+                                <th data-i18n="table_task">タスク名</th>
+                                <th data-i18n="table_priority">優先度</th>
+                                <th data-i18n="table_due">期限</th>
+                                <th data-i18n="table_tags">タグ</th>
+                                <th data-i18n="table_actions">操作</th>
                             </tr>
                         </thead>
                         <tbody id="tasksTableBody">
@@ -146,27 +160,27 @@
 
             <div class="content-view hidden" id="kanbanView">
                 <div class="view-header">
-                    <h2>カンバンボード</h2>
+                    <h2 data-i18n="kanban_board">カンバンボード</h2>
                 </div>
                 <div class="kanban-board">
                     <div class="kanban-column">
-                        <h3>Todo</h3>
-                        <div class="kanban-tasks" id="todoTasks"></div>
+                        <h3 data-i18n="todo">Todo</h3>
+                        <div class="kanban-tasks" id="todoTasks" data-status="todo"></div>
                     </div>
                     <div class="kanban-column">
-                        <h3>進行中</h3>
-                        <div class="kanban-tasks" id="inProgressTasks"></div>
+                        <h3 data-i18n="in_progress">進行中</h3>
+                        <div class="kanban-tasks" id="inProgressTasks" data-status="in-progress"></div>
                     </div>
                     <div class="kanban-column">
-                        <h3>完了</h3>
-                        <div class="kanban-tasks" id="completedTasks"></div>
+                        <h3 data-i18n="completed">完了</h3>
+                        <div class="kanban-tasks" id="completedTasks" data-status="completed"></div>
                     </div>
                 </div>
             </div>
 
             <div class="content-view hidden" id="listView">
                 <div class="view-header">
-                    <h2>リスト表示</h2>
+                    <h2 data-i18n="list_view">リスト表示</h2>
                 </div>
                 <div class="tasks-list" id="tasksList">
                     <!-- Tasks will be populated here -->
@@ -175,7 +189,7 @@
 
             <div class="content-view hidden" id="calendarView">
                 <div class="view-header">
-                    <h2>カレンダー</h2>
+                    <h2 data-i18n="calendar">カレンダー</h2>
                 </div>
                 <div class="calendar-container">
                     <div class="calendar-header">
@@ -188,6 +202,44 @@
                     </div>
                 </div>
             </div>
+
+            <div class="content-view hidden" id="settingsView">
+                <div class="view-header">
+                    <h2 data-i18n="settings">設定</h2>
+                </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="settings_username">ユーザーネーム</label>
+                        <input type="text" class="form-control" id="usernameInput">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="settings_language">言語</label>
+                        <select class="form-control" id="languageSelect">
+                            <option value="ja">日本語</option>
+                            <option value="en">English</option>
+                            <option value="ko">한국어</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="settings_theme">テーマ</label>
+                        <select class="form-control" id="themeSelect">
+                            <option value="light" data-i18n="theme_light">ライト</option>
+                            <option value="dark" data-i18n="theme_dark">ダーク</option>
+                        </select>
+                    </div>
+                    <button class="btn--primary" id="saveSettingsBtn" data-i18n="save">保存</button>
+                </div>
+            </div>
+
+            <div class="content-view hidden" id="changelogView">
+                <div class="view-header">
+                    <h2 data-i18n="changelog">更新履歴</h2>
+                </div>
+                <div class="changelog-content">
+                    <h3>v1.0.0-beta</h3>
+                    <p data-i18n="changelog_v1">初期リリース、多言語対応を追加</p>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -195,38 +247,42 @@
     <div class="modal" id="taskModal">
         <div class="modal__content">
             <div class="modal__header">
-                <h3 id="taskModalTitle">タスクを編集</h3>
+                <h3 id="taskModalTitle" data-i18n="task_modal_title">タスクを編集</h3>
                 <button class="modal__close" id="closeTaskModal">×</button>
             </div>
             <form class="modal__body" id="taskForm">
                 <div class="form-group">
-                    <label class="form-label">タスク名</label>
+                    <label class="form-label" data-i18n="task_name">タスク名</label>
                     <input type="text" class="form-control" id="taskTitle" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">説明</label>
+                    <label class="form-label" data-i18n="description">説明</label>
                     <textarea class="form-control" id="taskDescription" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">優先度</label>
+                    <label class="form-label" data-i18n="priority">優先度</label>
                     <select class="form-control" id="taskPriority">
-                        <option value="low">低</option>
-                        <option value="medium">中</option>
-                        <option value="high">高</option>
+                        <option value="low" data-i18n="priority_low">低</option>
+                        <option value="medium" data-i18n="priority_medium">中</option>
+                        <option value="high" data-i18n="priority_high">高</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">期限</label>
+                    <label class="form-label" data-i18n="due_date">期限</label>
                     <input type="date" class="form-control" id="taskDueDate">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">タグ (カンマ区切り)</label>
-                    <input type="text" class="form-control" id="taskTags" placeholder="仕事, 重要">
+                    <label class="form-label" data-i18n="tags">タグ (カンマ区切り)</label>
+                    <input type="text" class="form-control" id="taskTags" data-i18n-placeholder="tags_placeholder" placeholder="仕事, 重要">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-i18n="subtasks">サブタスク (改行区切り)</label>
+                    <textarea class="form-control" id="taskSubtasks" rows="3" data-i18n-placeholder="subtasks_placeholder" placeholder="サブタスク1&#10;サブタスク2"></textarea>
                 </div>
             </form>
             <div class="modal__footer">
-                <button class="btn--outline" id="cancelTask">キャンセル</button>
-                <button class="btn--primary" id="saveTask">保存</button>
+                <button class="btn--outline" id="cancelTask" data-i18n="cancel">キャンセル</button>
+                <button class="btn--primary" id="saveTask" data-i18n="save">保存</button>
             </div>
         </div>
     </div>
@@ -234,12 +290,13 @@
     <!-- Command Palette -->
     <div class="command-palette hidden" id="commandPalette">
         <div class="command-palette__content">
-            <input type="text" class="command-palette__input" id="commandInput" placeholder="コマンドを入力...">
+            <input type="text" class="command-palette__input" id="commandInput" data-i18n-placeholder="command_placeholder" placeholder="コマンドを入力...">
             <div class="command-palette__results" id="commandResults">
-                <div class="command-item" data-command="new-task">新しいタスク</div>
-                <div class="command-item" data-command="new-page">新しいページ</div>
-                <div class="command-item" data-command="export">エクスポート</div>
-                <div class="command-item" data-command="toggle-theme">テーマ切り替え</div>
+                <div class="command-item" data-command="new-task" data-i18n="cmd_new_task">新しいタスク</div>
+                <div class="command-item" data-command="new-page" data-i18n="cmd_new_page">新しいページ</div>
+                <div class="command-item" data-command="export" data-i18n="cmd_export">エクスポート</div>
+                <div class="command-item" data-command="import" data-i18n="cmd_import">インポート</div>
+                <div class="command-item" data-command="toggle-theme" data-i18n="cmd_toggle_theme">テーマ切り替え</div>
             </div>
         </div>
     </div>

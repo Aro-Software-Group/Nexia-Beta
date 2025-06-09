@@ -3,24 +3,256 @@ class NexiaApp {
         this.currentView = 'editor';
         this.currentPage = 'welcome';
         this.currentTheme = 'light';
+        this.lang = 'ja';
+        this.translations = {
+            ja: {
+                app_name: 'Nexia Beta',
+                tagline: 'Connect. Organize. Achieve.',
+                search_placeholder: '検索...',
+                add_new: '+ 新規',
+                pages: 'ページ',
+                views: '表示',
+                timer: 'タイマー',
+                start: '開始',
+                pause: '一時停止',
+                reset: 'リセット',
+                pomodoro: 'ポモドーロ (25分)',
+                custom: 'カスタム',
+                stopwatch: 'ストップウォッチ',
+                minutes: '分',
+                add_page: '+ ページ追加',
+                table: 'テーブル',
+                kanban: 'カンバン',
+                list: 'リスト',
+                calendar: 'カレンダー',
+                export: 'エクスポート',
+                import: 'インポート',
+                page_settings: '設定',
+                block_heading: '見出し',
+                block_text: 'テキスト',
+                block_task: 'タスク',
+                block_checklist: 'チェックリスト',
+                block_divider: '区切り線',
+                tasks_list: 'タスク一覧',
+                all_priorities: 'すべての優先度',
+                priority_high: '高',
+                priority_medium: '中',
+                priority_low: '低',
+                add_task: '+ タスク追加',
+                table_complete: '完了',
+                table_task: 'タスク名',
+                table_priority: '優先度',
+                table_due: '期限',
+                table_tags: 'タグ',
+                table_actions: '操作',
+                kanban_board: 'カンバンボード',
+                todo: 'Todo',
+                in_progress: '進行中',
+                completed: '完了',
+                list_view: 'リスト表示',
+                settings: '設定',
+                others: 'その他',
+                settings_username: 'ユーザーネーム',
+                settings_language: '言語',
+                settings_theme: 'テーマ',
+                theme_light: 'ライト',
+                theme_dark: 'ダーク',
+                command_placeholder: 'コマンドを入力...',
+                cmd_new_task: '新しいタスク',
+                cmd_new_page: '新しいページ',
+                cmd_export: 'エクスポート',
+                cmd_import: 'インポート',
+                cmd_toggle_theme: 'テーマ切り替え',
+                task_modal_title: 'タスクを編集',
+                task_name: 'タスク名',
+                description: '説明',
+                priority: '優先度',
+                due_date: '期限',
+                tags: 'タグ (カンマ区切り)',
+                subtasks: 'サブタスク (改行区切り)',
+                cancel: 'キャンセル',
+                save: '保存',
+                tags_placeholder: '仕事, 重要',
+                subtasks_placeholder: 'サブタスク1\nサブタスク2',
+                command_new: '新規追加',
+                minutes_placeholder: '分',
+                settings_saved: '設定を保存しました',
+                changelog: '更新履歴',
+                changelog_v1: '初期リリース、多言語対応を追加'
+            },
+            en: {
+                app_name: 'Nexia Beta',
+                tagline: 'Connect. Organize. Achieve.',
+                search_placeholder: 'Search...',
+                add_new: '+ New',
+                pages: 'Pages',
+                views: 'Views',
+                timer: 'Timer',
+                start: 'Start',
+                pause: 'Pause',
+                reset: 'Reset',
+                pomodoro: 'Pomodoro (25m)',
+                custom: 'Custom',
+                stopwatch: 'Stopwatch',
+                minutes: 'min',
+                add_page: '+ Add Page',
+                table: 'Table',
+                kanban: 'Kanban',
+                list: 'List',
+                calendar: 'Calendar',
+                export: 'Export',
+                import: 'Import',
+                page_settings: 'Settings',
+                block_heading: 'Heading',
+                block_text: 'Text',
+                block_task: 'Task',
+                block_checklist: 'Checklist',
+                block_divider: 'Divider',
+                tasks_list: 'Tasks',
+                all_priorities: 'All Priorities',
+                priority_high: 'High',
+                priority_medium: 'Medium',
+                priority_low: 'Low',
+                add_task: '+ Add Task',
+                table_complete: 'Done',
+                table_task: 'Task',
+                table_priority: 'Priority',
+                table_due: 'Due',
+                table_tags: 'Tags',
+                table_actions: 'Actions',
+                kanban_board: 'Kanban Board',
+                todo: 'Todo',
+                in_progress: 'In Progress',
+                completed: 'Completed',
+                list_view: 'List View',
+                settings: 'Settings',
+                others: 'Others',
+                settings_username: 'Username',
+                settings_language: 'Language',
+                settings_theme: 'Theme',
+                theme_light: 'Light',
+                theme_dark: 'Dark',
+                command_placeholder: 'Type a command...',
+                cmd_new_task: 'New Task',
+                cmd_new_page: 'New Page',
+                cmd_export: 'Export',
+                cmd_import: 'Import',
+                cmd_toggle_theme: 'Toggle Theme',
+                task_modal_title: 'Edit Task',
+                task_name: 'Task Name',
+                description: 'Description',
+                priority: 'Priority',
+                due_date: 'Due Date',
+                tags: 'Tags (comma separated)',
+                subtasks: 'Subtasks (one per line)',
+                cancel: 'Cancel',
+                save: 'Save',
+                tags_placeholder: 'work, important',
+                subtasks_placeholder: 'Subtask1\nSubtask2',
+                command_new: 'New',
+                minutes_placeholder: 'min',
+                settings_saved: 'Settings saved',
+                changelog: 'Changelog',
+                changelog_v1: 'Initial release with multi-language support'
+            },
+            ko: {
+                app_name: 'Nexia Beta',
+                tagline: 'Connect. Organize. Achieve.',
+                search_placeholder: '검색...',
+                add_new: '+ 새로 만들기',
+                pages: '페이지',
+                views: '보기',
+                timer: '타이머',
+                start: '시작',
+                pause: '일시 중지',
+                reset: '재설정',
+                pomodoro: '포모도로 (25분)',
+                custom: '사용자 지정',
+                stopwatch: '스톱워치',
+                minutes: '분',
+                add_page: '+ 페이지 추가',
+                table: '테이블',
+                kanban: '칸반',
+                list: '리스트',
+                calendar: '캘린더',
+                export: '내보내기',
+                import: '가져오기',
+                page_settings: '설정',
+                block_heading: '제목',
+                block_text: '텍스트',
+                block_task: '작업',
+                block_checklist: '체크리스트',
+                block_divider: '구분선',
+                tasks_list: '작업 목록',
+                all_priorities: '모든 우선순위',
+                priority_high: '높음',
+                priority_medium: '중간',
+                priority_low: '낮음',
+                add_task: '+ 작업 추가',
+                table_complete: '완료',
+                table_task: '작업',
+                table_priority: '우선순위',
+                table_due: '마감',
+                table_tags: '태그',
+                table_actions: '동작',
+                kanban_board: '칸반 보드',
+                todo: '할 일',
+                in_progress: '진행 중',
+                completed: '완료됨',
+                list_view: '리스트 보기',
+                settings: '설정',
+                others: '기타',
+                settings_username: '사용자 이름',
+                settings_language: '언어',
+                settings_theme: '테마',
+                theme_light: '라이트',
+                theme_dark: '다크',
+                command_placeholder: '명령 입력...',
+                cmd_new_task: '새 작업',
+                cmd_new_page: '새 페이지',
+                cmd_export: '내보내기',
+                cmd_import: '가져오기',
+                cmd_toggle_theme: '테마 전환',
+                task_modal_title: '작업 편집',
+                task_name: '작업명',
+                description: '설명',
+                priority: '우선순위',
+                due_date: '마감일',
+                tags: '태그 (쉼표 구분)',
+                subtasks: '하위 작업 (줄마다 하나)',
+                cancel: '취소',
+                save: '저장',
+                tags_placeholder: '업무, 중요',
+                subtasks_placeholder: '하위작업1\n하위작업2',
+                command_new: '새로 만들기',
+                minutes_placeholder: '분',
+                settings_saved: '설정이 저장되었습니다',
+                changelog: '변경 기록',
+                changelog_v1: '초기 릴리스, 다국어 지원 추가'
+            }
+        };
         this.timer = {
             isRunning: false,
             isPaused: false,
             currentTime: 25 * 60, // 25 minutes in seconds
             interval: null,
-            type: 'pomodoro'
+            type: 'pomodoro',
+            customDuration: 25
         };
         this.data = {
             pages: [],
             tasks: [],
             settings: {
                 theme: 'light',
-                timerDuration: 25
+                timerDuration: 25,
+                language: 'ja',
+                username: 'Guest'
             }
         };
         this.commandPaletteVisible = false;
         this.editingTask = null;
-        
+        this.calendarDate = new Date();
+
         this.init();
     }
 
@@ -28,6 +260,7 @@ class NexiaApp {
         await this.initDatabase();
         await this.loadData();
         this.setupEventListeners();
+        this.applyTranslations();
         this.renderCurrentView();
         this.updateTimer();
     }
@@ -70,13 +303,16 @@ class NexiaApp {
                         priority: 'medium',
                         dueDate: null,
                         tags: ['sample'],
+                        subtasks: [],
                         createdAt: new Date().toISOString(),
                         status: 'todo'
                     }
                 ],
                 settings: {
                     theme: 'light',
-                    timerDuration: 25
+                    timerDuration: 25,
+                    language: 'ja',
+                    username: 'Guest'
                 }
             };
             localStorage.setItem('nexia_data', JSON.stringify(defaultData));
@@ -89,7 +325,9 @@ class NexiaApp {
             if (stored) {
                 this.data = JSON.parse(stored);
                 this.currentTheme = this.data.settings.theme || 'light';
+                this.lang = this.data.settings.language || 'ja';
                 document.documentElement.setAttribute('data-theme', this.currentTheme);
+                document.documentElement.setAttribute('lang', this.lang);
                 this.updateThemeButton();
             }
         } catch (error) {
@@ -130,6 +368,25 @@ class NexiaApp {
         document.getElementById('pauseTimer').addEventListener('click', this.pauseTimer.bind(this));
         document.getElementById('resetTimer').addEventListener('click', this.resetTimer.bind(this));
         document.getElementById('timerType').addEventListener('change', this.changeTimerType.bind(this));
+        document.getElementById('customTimerInput').addEventListener('change', (e) => {
+            const val = parseInt(e.target.value, 10);
+            if (!isNaN(val) && val > 0) {
+                this.timer.customDuration = val;
+                if (this.timer.type === 'custom') {
+                    this.resetTimer();
+                }
+            }
+        });
+
+        // Calendar navigation
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            this.calendarDate.setMonth(this.calendarDate.getMonth() - 1);
+            this.renderCalendarView();
+        });
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            this.calendarDate.setMonth(this.calendarDate.getMonth() + 1);
+            this.renderCalendarView();
+        });
 
         // Editor events
         document.addEventListener('click', (e) => {
@@ -149,6 +406,15 @@ class NexiaApp {
 
         // Export button
         document.getElementById('exportBtn').addEventListener('click', this.exportData.bind(this));
+        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importInput').click());
+        document.getElementById('importInput').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                this.importData(e.target.files[0]);
+                e.target.value = '';
+            }
+        });
+
+        document.getElementById('saveSettingsBtn').addEventListener('click', this.saveSettings.bind(this));
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
@@ -215,6 +481,33 @@ class NexiaApp {
         btn.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
     }
 
+    t(key) {
+        return (this.translations[this.lang] && this.translations[this.lang][key]) || key;
+    }
+
+    applyTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = this.t(el.dataset.i18n);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = this.t(el.dataset.i18nPlaceholder);
+        });
+        document.documentElement.setAttribute('lang', this.lang);
+        this.updateThemeButton();
+    }
+
+    saveSettings() {
+        this.data.settings.username = document.getElementById('usernameInput').value;
+        this.data.settings.language = document.getElementById('languageSelect').value;
+        this.data.settings.theme = document.getElementById('themeSelect').value;
+        this.currentTheme = this.data.settings.theme;
+        this.lang = this.data.settings.language;
+        document.documentElement.setAttribute('data-theme', this.currentTheme);
+        this.applyTranslations();
+        this.saveData();
+        alert(this.t('settings_saved'));
+    }
+
     // Sidebar Management
     toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
@@ -263,7 +556,14 @@ class NexiaApp {
             case 'calendar':
                 this.renderCalendarView();
                 break;
+            case 'settings':
+                this.renderSettingsView();
+                break;
+            case 'changelog':
+                this.renderChangelogView();
+                break;
         }
+        this.applyTranslations();
     }
 
     // Page Management
@@ -422,15 +722,17 @@ class NexiaApp {
         const form = document.getElementById('taskForm');
 
         if (task) {
-            title.textContent = 'タスクを編集';
+            title.textContent = this.t('task_modal_title');
             document.getElementById('taskTitle').value = task.title || '';
             document.getElementById('taskDescription').value = task.description || '';
             document.getElementById('taskPriority').value = task.priority || 'medium';
             document.getElementById('taskDueDate').value = task.dueDate || '';
             document.getElementById('taskTags').value = task.tags ? task.tags.join(', ') : '';
+            document.getElementById('taskSubtasks').value = task.subtasks ? task.subtasks.map(st => st.title).join('\n') : '';
         } else {
-            title.textContent = '新しいタスク';
+            title.textContent = this.t('cmd_new_task');
             form.reset();
+            document.getElementById('taskSubtasks').value = '';
         }
 
         modal.classList.add('active');
@@ -452,6 +754,7 @@ class NexiaApp {
             priority: document.getElementById('taskPriority').value,
             dueDate: document.getElementById('taskDueDate').value || null,
             tags: document.getElementById('taskTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+            subtasks: document.getElementById('taskSubtasks').value.split('\n').map(t => t.trim()).filter(t => t).map(t => ({ id: `sub-${Date.now()}-${Math.random().toString(36).slice(2,5)}`, title: t, completed: false })),
             completed: false,
             status: 'todo'
         };
@@ -492,6 +795,16 @@ class NexiaApp {
         }
     }
 
+    updateTaskStatus(taskId, status) {
+        const task = this.data.tasks.find(t => t.id === taskId);
+        if (task) {
+            task.status = status;
+            task.completed = status === 'completed';
+            this.saveData();
+            this.renderCurrentView();
+        }
+    }
+
     // View Renderers
     renderTableView() {
         const tbody = document.getElementById('tasksTableBody');
@@ -506,6 +819,7 @@ class NexiaApp {
                 <td>
                     <div class="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
                     ${task.description ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">${task.description}</div>` : ''}
+                    ${task.subtasks && task.subtasks.length > 0 ? `<ul class="subtask-list">${task.subtasks.map(st => `<li>${st.title}</li>`).join('')}</ul>` : ''}
                 </td>
                 <td>
                     <span class="priority-badge priority-badge--${task.priority}">${this.getPriorityText(task.priority)}</span>
@@ -530,11 +844,12 @@ class NexiaApp {
         document.getElementById('todoTasks').innerHTML = todoTasks.map(task => this.renderKanbanTask(task)).join('');
         document.getElementById('inProgressTasks').innerHTML = inProgressTasks.map(task => this.renderKanbanTask(task)).join('');
         document.getElementById('completedTasks').innerHTML = completedTasks.map(task => this.renderKanbanTask(task)).join('');
+        this.addKanbanDragEvents();
     }
 
     renderKanbanTask(task) {
         return `
-            <div class="kanban-task" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">
+            <div class="kanban-task" draggable="true" data-id="${task.id}" onclick="app.showTaskModal(app.data.tasks.find(t => t.id === '${task.id}'))">
                 <div style="font-weight: 500; margin-bottom: 8px;">${task.title}</div>
                 ${task.description ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 8px;">${task.description}</div>` : ''}
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -543,6 +858,29 @@ class NexiaApp {
                 </div>
             </div>
         `;
+    }
+
+    addKanbanDragEvents() {
+        document.querySelectorAll('.kanban-task').forEach(taskEl => {
+            taskEl.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', taskEl.dataset.id);
+            });
+        });
+
+        document.querySelectorAll('.kanban-tasks').forEach(col => {
+            col.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                col.classList.add('drag-over');
+            });
+            col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+            col.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const taskId = e.dataTransfer.getData('text/plain');
+                const status = col.dataset.status;
+                this.updateTaskStatus(taskId, status);
+                col.classList.remove('drag-over');
+            });
+        });
     }
 
     renderListView() {
@@ -560,6 +898,7 @@ class NexiaApp {
                         ${task.dueDate ? `<span>期限: ${new Date(task.dueDate).toLocaleDateString('ja-JP')}</span>` : ''}
                         ${task.tags.length > 0 ? `<span>${task.tags.map(tag => `#${tag}`).join(' ')}</span>` : ''}
                     </div>
+                    ${task.subtasks && task.subtasks.length > 0 ? `<ul class="subtask-list">${task.subtasks.map(st => `<li>${st.title}</li>`).join('')}</ul>` : ''}
                 </div>
             </div>
         `).join('');
@@ -567,13 +906,12 @@ class NexiaApp {
 
     renderCalendarView() {
         const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
+        const year = this.calendarDate.getFullYear();
+        const month = this.calendarDate.getMonth();
         
         document.getElementById('calendarMonth').textContent = `${year}年${month + 1}月`;
         
         const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
         const startDate = new Date(firstDay);
         startDate.setDate(startDate.getDate() - firstDay.getDay());
         
@@ -612,6 +950,16 @@ class NexiaApp {
         grid.innerHTML = html;
     }
 
+    renderSettingsView() {
+        document.getElementById('usernameInput').value = this.data.settings.username || '';
+        document.getElementById('languageSelect').value = this.data.settings.language || 'ja';
+        document.getElementById('themeSelect').value = this.data.settings.theme || 'light';
+    }
+
+    renderChangelogView() {
+        // nothing dynamic for now
+    }
+
     getFilteredTasks() {
         const priorityFilter = document.getElementById('filterPriority').value;
         let tasks = [...this.data.tasks];
@@ -625,10 +973,10 @@ class NexiaApp {
 
     getPriorityText(priority) {
         switch (priority) {
-            case 'high': return '高';
-            case 'medium': return '中';
-            case 'low': return '低';
-            default: return '中';
+            case 'high': return this.t('priority_high');
+            case 'medium': return this.t('priority_medium');
+            case 'low': return this.t('priority_low');
+            default: return this.t('priority_medium');
         }
     }
 
@@ -677,7 +1025,7 @@ class NexiaApp {
         } else if (type === 'stopwatch') {
             this.timer.currentTime = 0;
         } else {
-            this.timer.currentTime = 25 * 60; // Default to 25 minutes
+            this.timer.currentTime = (this.timer.customDuration || 25) * 60;
         }
         
         this.updateTimer();
@@ -687,6 +1035,11 @@ class NexiaApp {
     changeTimerType() {
         const type = document.getElementById('timerType').value;
         this.timer.type = type;
+        const input = document.getElementById('customTimerInput');
+        input.style.display = type === 'custom' ? 'block' : 'none';
+        if (type === 'custom') {
+            input.value = this.timer.customDuration;
+        }
         this.resetTimer();
     }
 
@@ -824,6 +1177,9 @@ class NexiaApp {
             case 'export':
                 this.exportData();
                 break;
+            case 'import':
+                document.getElementById('importInput').click();
+                break;
             case 'toggle-theme':
                 this.toggleTheme();
                 break;
@@ -861,6 +1217,29 @@ class NexiaApp {
         URL.revokeObjectURL(url);
     }
 
+    importData(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const parsed = JSON.parse(e.target.result);
+                if (parsed.pages && parsed.tasks) {
+                    this.data.pages = parsed.pages;
+                    this.data.tasks = parsed.tasks;
+                    this.data.settings = parsed.settings || this.data.settings;
+                    this.saveData();
+                    this.renderPagesList();
+                    this.renderCurrentView();
+                    alert('データをインポートしました');
+                } else {
+                    alert('無効なデータ形式です');
+                }
+            } catch (err) {
+                alert('インポートに失敗しました');
+            }
+        };
+        reader.readAsText(file);
+    }
+
     // Initialize app
     async start() {
         // Request notification permission
@@ -870,6 +1249,7 @@ class NexiaApp {
         
         this.renderPagesList();
         this.switchView('editor');
+        this.changeTimerType();
     }
 }
 
