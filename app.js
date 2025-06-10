@@ -60,6 +60,7 @@ class NexiaApp {
                 settings_theme: 'テーマ',
                 theme_light: 'ライト',
                 theme_dark: 'ダーク',
+                theme_clear: 'クリアデザイン',
                 command_placeholder: 'コマンドを入力...',
                 cmd_new_task: '新しいタスク',
                 cmd_new_page: '新しいページ',
@@ -81,6 +82,7 @@ class NexiaApp {
                 minutes_placeholder: '分',
                 settings_saved: '設定を保存しました',
                 changelog: '更新履歴',
+                changelog_v101: 'クリアデザイン (iOS/Vision OS風) を追加',
                 changelog_v1: '初期リリース、多言語対応を追加',
                 recurrence_type: '繰り返しタイプ',
                 recurrence_none: 'なし',
@@ -154,6 +156,7 @@ class NexiaApp {
                 settings_theme: 'Theme',
                 theme_light: 'Light',
                 theme_dark: 'Dark',
+                theme_clear: 'Clear',
                 command_placeholder: 'Type a command...',
                 cmd_new_task: 'New Task',
                 cmd_new_page: 'New Page',
@@ -175,6 +178,7 @@ class NexiaApp {
                 minutes_placeholder: 'min',
                 settings_saved: 'Settings saved',
                 changelog: 'Changelog',
+                changelog_v101: 'Added clear iOS/Vision OS-style design option',
                 changelog_v1: 'Initial release with multi-language support',
                 recurrence_type: 'Recurrence Type',
                 recurrence_none: 'None',
@@ -248,6 +252,7 @@ class NexiaApp {
                 settings_theme: '테마',
                 theme_light: '라이트',
                 theme_dark: '다크',
+                theme_clear: '클리어',
                 command_placeholder: '명령 입력...',
                 cmd_new_task: '새 작업',
                 cmd_new_page: '새 페이지',
@@ -269,6 +274,7 @@ class NexiaApp {
                 minutes_placeholder: '분',
                 settings_saved: '설정이 저장되었습니다',
                 changelog: '변경 기록',
+                changelog_v101: 'iOS/Vision OS 스타일 클리어 디자인 옵션 추가',
                 changelog_v1: '초기 릴리스, 다국어 지원 추가',
                 recurrence_type: '반복 유형',
                 recurrence_none: '없음',
@@ -583,7 +589,9 @@ class NexiaApp {
 
     // Theme Management
     toggleTheme() {
-        this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+        const themes = ['light', 'dark', 'clear'];
+        const idx = themes.indexOf(this.currentTheme);
+        this.currentTheme = themes[(idx + 1) % themes.length];
         document.documentElement.setAttribute('data-theme', this.currentTheme);
         this.data.settings.theme = this.currentTheme;
         this.updateThemeButton();
@@ -592,7 +600,8 @@ class NexiaApp {
 
     updateThemeButton() {
         const btn = document.getElementById('themeToggle');
-        btn.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
+        const icons = { light: '🌙', dark: '☀️', clear: '🧊' };
+        btn.textContent = icons[this.currentTheme] || '🌙';
     }
 
     t(key) {
@@ -1499,7 +1508,7 @@ class NexiaApp {
         const data = {
             ...this.data,
             exportedAt: new Date().toISOString(),
-            version: '1.0.0'
+            version: '1.0.1-beta'
         };
         
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

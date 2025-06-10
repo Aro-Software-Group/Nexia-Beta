@@ -459,11 +459,13 @@ select.form-control {
   border: 1px solid var(--color-card-border);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  transition: box-shadow var(--duration-normal) var(--ease-standard);
+  transition: box-shadow var(--duration-normal) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-standard);
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .card__body {
@@ -787,6 +789,64 @@ select.form-control {
   --color-card-border-inner: rgba(255, 255, 255, 0.05);
   --color-sidebar: #252525;
   --color-header: #2d2d2d;
+}
+
+[data-theme="clear"] {
+  --color-background: rgba(255, 255, 255, 0.6);
+  --color-surface: rgba(255, 255, 255, 0.3);
+  --color-text: #2c2c2c;
+  --color-text-secondary: #6b6b6b;
+  --color-primary: #ff7849;
+  --color-primary-hover: #ff8659;
+  --color-primary-active: #ff6a39;
+  --color-secondary: rgba(255, 120, 73, 0.2);
+  --color-secondary-hover: rgba(255, 120, 73, 0.25);
+  --color-secondary-active: rgba(255, 120, 73, 0.3);
+  --color-border: rgba(44, 44, 44, 0.2);
+  --color-btn-primary-text: #1a1a1a;
+  --color-card-border: rgba(44, 44, 44, 0.15);
+  --color-card-border-inner: rgba(44, 44, 44, 0.1);
+  --color-sidebar: rgba(255, 255, 255, 0.15);
+  --color-header: rgba(255, 255, 255, 0.15);
+  --frost-blur: 20px;
+}
+
+[data-theme="clear"] .header,
+[data-theme="clear"] .sidebar,
+[data-theme="clear"] .modal__content,
+[data-theme="clear"] .card,
+[data-theme="clear"] .timer-widget {
+  backdrop-filter: blur(var(--frost-blur));
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-surface);
+  animation: fadeInUp var(--duration-normal) var(--ease-standard);
+}
+
+[data-theme="clear"] .header {
+  border-bottom: 1px solid var(--color-border);
+}
+
+[data-theme="clear"] .sidebar {
+  border-right: 1px solid var(--color-border);
+}
+
+[data-theme="clear"] .card:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+[data-theme="clear"] body {
+  backdrop-filter: saturate(1.8) blur(var(--frost-blur));
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Base styles */
@@ -1127,6 +1187,10 @@ p {
 
 .content-view.hidden {
   display: none;
+}
+
+[data-theme="clear"] .content-view {
+  animation: fadeInUp var(--duration-normal) var(--ease-standard);
 }
 
 /* Page Header */
