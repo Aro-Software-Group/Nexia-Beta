@@ -2077,3 +2077,221 @@ p {
     /* transform and box-shadow from general :hover in clear mode still apply */
     border-color: rgba(var(--color-primary-rgb, 255, 107, 53), 0.5); /* Added for consistency */
 }
+
+/* Liquid Glass Enhancement */
+[data-clear-design="true"] {
+  --glass-primary: rgba(255, 255, 255, 0.03);
+  --glass-secondary: rgba(255, 255, 255, 0.08);
+  --glass-tertiary: rgba(255, 255, 255, 0.15);
+  --glass-surface: rgba(255, 255, 255, 0.25);
+
+  --refraction-light: rgba(255, 255, 255, 0.4);
+  --refraction-medium: rgba(255, 255, 255, 0.2);
+  --refraction-subtle: rgba(255, 255, 255, 0.1);
+
+  --shadow-far: rgba(0, 0, 0, 0.02);
+  --shadow-near: rgba(0, 0, 0, 0.05);
+  --shadow-close: rgba(0, 0, 0, 0.1);
+  --shadow-contact: rgba(0, 0, 0, 0.15);
+
+  --blur-ultra-fine: 4px;
+  --blur-fine: 8px;
+  --blur-medium: 16px;
+  --blur-strong: 24px;
+  --blur-ultra-strong: 32px;
+}
+
+[data-clear-design="true"] .liquid-glass {
+  position: relative;
+  background:
+    radial-gradient(ellipse 100% 80% at 20% 20%, var(--glass-surface) 0%, transparent 40%),
+    radial-gradient(ellipse 80% 100% at 80% 80%, var(--glass-tertiary) 0%, transparent 50%),
+    linear-gradient(135deg, var(--glass-secondary) 0%, var(--glass-primary) 50%, var(--glass-secondary) 100%),
+    linear-gradient(45deg, var(--glass-tertiary) 0%, transparent 30%, var(--glass-primary) 70%);
+
+  backdrop-filter:
+    blur(var(--blur-medium))
+    saturate(110%)
+    brightness(108%)
+    contrast(102%)
+    hue-rotate(5deg);
+  -webkit-backdrop-filter:
+    blur(var(--blur-medium))
+    saturate(110%)
+    brightness(108%)
+    contrast(102%)
+    hue-rotate(5deg);
+
+  border-radius: 24px;
+  border: 1px solid;
+  border-image: linear-gradient(135deg,
+    var(--refraction-light) 0%,
+    var(--refraction-subtle) 30%,
+    transparent 50%,
+    var(--refraction-subtle) 70%,
+    var(--refraction-light) 100%) 1;
+
+  box-shadow:
+    0 20px 80px var(--shadow-far),
+    0 15px 60px var(--shadow-near),
+    0 10px 40px var(--shadow-close),
+    0 5px 20px var(--shadow-contact),
+    inset 0 2px 0 var(--refraction-light),
+    inset 0 -1px 0 var(--shadow-near),
+    inset 2px 0 0 var(--refraction-subtle),
+    inset -2px 0 0 rgba(0, 0, 0, 0.02),
+    inset 0 8px 32px var(--refraction-medium),
+    inset 0 -8px 32px var(--shadow-close);
+
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+
+[data-clear-design="true"] .liquid-glass:hover {
+  transform: translateY(-4px) scale(1.02);
+  backdrop-filter:
+    blur(var(--blur-strong))
+    saturate(120%)
+    brightness(112%)
+    contrast(104%);
+}
+
+[data-clear-design="true"] .liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background:
+    conic-gradient(from 45deg,
+      var(--refraction-light) 0deg,
+      var(--refraction-subtle) 90deg,
+      transparent 180deg,
+      var(--refraction-subtle) 270deg,
+      var(--refraction-light) 360deg),
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(0, 0, 0, 0.01) 50%,
+      rgba(0, 0, 0, 0.05) 75%,
+      rgba(0, 0, 0, 0.08) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: edgeShimmer 12s ease-in-out infinite;
+}
+
+@keyframes edgeShimmer {
+  0%, 100% { opacity: 0.6; transform: rotate(0deg); }
+  25% { opacity: 0.8; transform: rotate(2deg); }
+  50% { opacity: 1; transform: rotate(0deg); }
+  75% { opacity: 0.7; transform: rotate(-1deg); }
+}
+
+[data-clear-design="true"] .liquid-glass::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 25% 40% at 15% 15%, var(--refraction-light) 0%, transparent 40%),
+    radial-gradient(ellipse 20% 30% at 85% 20%, var(--refraction-medium) 0%, transparent 50%),
+    radial-gradient(ellipse 30% 25% at 20% 85%, var(--refraction-medium) 0%, transparent 45%),
+    radial-gradient(ellipse 15% 35% at 80% 80%, var(--refraction-subtle) 0%, transparent 60%),
+    linear-gradient(125deg, transparent 40%, var(--refraction-subtle) 45%, var(--refraction-light) 50%, var(--refraction-subtle) 55%, transparent 60%),
+    linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.08) 35%, transparent 40%);
+  border-radius: inherit;
+  animation: lightDance 15s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  filter: blur(1px);
+}
+
+@keyframes lightDance {
+  0%, 100% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+    opacity: 0.4;
+  }
+  20% {
+    transform: translate(3%, -2%) rotate(8deg) scale(1.05);
+    opacity: 0.6;
+  }
+  40% {
+    transform: translate(-2%, 4%) rotate(-5deg) scale(0.95);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(4%, -3%) rotate(12deg) scale(1.02);
+    opacity: 0.9;
+  }
+  80% {
+    transform: translate(-3%, 2%) rotate(-8deg) scale(0.98);
+    opacity: 0.7;
+  }
+}
+
+[data-clear-design="true"] .glass-shallow {
+  background: var(--glass-primary);
+  backdrop-filter: blur(var(--blur-fine)) saturate(105%);
+  box-shadow:
+    0 4px 16px var(--shadow-near),
+    inset 0 1px 0 var(--refraction-subtle);
+}
+
+[data-clear-design="true"] .glass-deep {
+  background:
+    radial-gradient(circle at 30% 30%, var(--glass-surface) 0%, var(--glass-primary) 60%),
+    var(--glass-secondary);
+  backdrop-filter: blur(var(--blur-ultra-strong)) saturate(115%) brightness(110%);
+  box-shadow:
+    0 24px 96px var(--shadow-contact),
+    0 12px 48px var(--shadow-close),
+    inset 0 4px 0 var(--refraction-light),
+    inset 0 -4px 0 var(--shadow-close),
+    inset 0 16px 64px rgba(255, 255, 255, 0.2),
+    inset 0 -16px 64px rgba(0, 0, 0, 0.08);
+}
+
+[data-clear-design="true"] .glass-particles {
+  position: relative;
+}
+
+[data-clear-design="true"] .glass-particles::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+    radial-gradient(circle at 60% 70%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0.5px, transparent 0.5px),
+    radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.5) 0.8px, transparent 0.8px);
+  background-size: 60px 60px, 80px 80px, 40px 40px, 70px 70px;
+  animation: sparkle 8s linear infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.float-gentle {
+  animation: floatGentle 6s ease-in-out infinite;
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(1deg); }
+  66% { transform: translateY(-6px) rotate(-0.5deg); }
+}
+
+.pulse-subtle {
+  animation: pulseSubtle 4s ease-in-out infinite;
+}
+
+@keyframes pulseSubtle {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.02); opacity: 1; }
+}
